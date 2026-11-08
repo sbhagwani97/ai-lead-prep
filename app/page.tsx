@@ -23,6 +23,15 @@ const STEPS = [
   },
 ];
 
+const WEEKS = [
+  { t: "Foundations and RAG basics", tasks: ["Read the LLM concepts", "Lab: structured output", "Set up pgvector", "Build RAG v1 with citations"] },
+  { t: "RAG in depth", tasks: ["Hybrid search and reranking", "Choose a vector database", "Chunking experiments", "Write the failure log"] },
+  { t: "Agents and orchestration", tasks: ["Tool-calling loop lab", "LangGraph agent with approvals", "Trace it in LangSmith", "Agent design review"] },
+  { t: "MCP, A2A and evals", tasks: ["Build an MCP tool server", "Draft a 30-question golden set", "Score it with RAGAS", "Add the eval to CI"] },
+  { t: "LLMOps and serving", tasks: ["Gateway with fallback", "Cost and token accounting", "Guardrails on input and output", "Sketch the serving plan"] },
+  { t: "Leadership and mocks", tasks: ["Security and governance review", "Build vs buy write-up", "System-design drills", "Two mock interviews"] },
+];
+
 const DEMO_TASKS = [
   "Read concepts 2.1 and 2.2",
   "Lab: structured output with validation",
@@ -136,6 +145,63 @@ export default async function Home() {
                   <p>{s.d}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* STORY: one pinned card that changes as you scroll */}
+        <section className="lp-story" data-story data-step="0" aria-label="Course progress, week by week">
+          <div className="lp-stick">
+            <div className="lp-wrap lp-story-in">
+              <div className="lp-story-copy">
+                <span className="lp-eyebrow">Week by week</span>
+                <h2>Scroll, and watch six weeks fill up.</h2>
+                <ol className="lp-story-steps">
+                  {WEEKS.map((w, i) => (
+                    <li key={w.t} data-step-item>
+                      <span className="d">{i + 1}</span>
+                      {w.t}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <div className="lp-pin" aria-hidden>
+                <div className="lp-pin-top">
+                  <div className="lp-ring">
+                    <svg viewBox="0 0 120 120">
+                      <circle className="trk" cx="60" cy="60" r="54" />
+                      <circle className="val" cx="60" cy="60" r="54" />
+                    </svg>
+                    <div className="num"><b data-story-pct>0</b><span>%</span></div>
+                  </div>
+                  <div className="lp-pin-meta">
+                    <small>{TRACKS[0]?.title} track</small>
+                    <strong data-story-week>Week 1 of 6</strong>
+                    <div className="lp-segs">
+                      {WEEKS.map((w) => (
+                        <i key={w.t} data-seg />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lp-weeks-stack">
+                  {WEEKS.map((w, i) => (
+                    <div className="lp-wkpanel" key={w.t} data-week>
+                      <h3>Week {i + 1}: {w.t}</h3>
+                      <ul>
+                        {w.tasks.map((t) => (
+                          <li key={t} data-t>
+                            <span className="box"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" /></svg></span>
+                            {t}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>

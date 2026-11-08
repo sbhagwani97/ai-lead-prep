@@ -60,13 +60,13 @@ export default function TrackPicker({
         })}
       </div>
       {err && <div className="err" role="alert">{err}</div>}
-      <div className="row">
+      <div className="ap-row">
         {!first && (
-          <button className="btn" onClick={() => router.push("/prep")} disabled={busy}>
+          <button className="ap-btn" onClick={() => router.push("/prep")} disabled={busy}>
             Cancel
           </button>
         )}
-        <button className="btn primary" onClick={submit} disabled={busy || picked.length === 0}>
+        <button className="ap-btn primary" onClick={submit} disabled={busy || picked.length === 0}>
           {busy ? "Saving..." : first ? "Continue" : "Save"}
         </button>
       </div>
