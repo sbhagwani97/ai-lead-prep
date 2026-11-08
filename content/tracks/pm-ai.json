@@ -1,0 +1,694 @@
+{
+ "id": "pm-ai",
+ "title": "Product Manager - AI",
+ "hero": {
+  "h1": "AI product manager interviews: what the job asks for",
+  "p": "You do not need to train models, but you must reason about them. This track covers the AI concepts a product manager is probed on, how to frame, spec, evaluate and launch AI features, and a 6-week plan of 3 hours on weekdays and 5 on weekends.",
+  "chips": [
+   "10 concepts",
+   "about 20 tools",
+   "1 product project",
+   "150 hours"
+  ]
+ },
+ "jd": {
+  "lead": "This is a synthesis of requirements that recur in AI product manager postings, not a statistical count. Check it against the three or four postings you are actually targeting and adjust the weights.",
+  "rows": [
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "AI product sense: when AI is the right solution, and which kind (rules, classic ML, LLM)",
+    "where": "Case questions: \"would you build this with AI?\" and use-case prioritisation"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "LLM working knowledge: tokens, context, prompting, RAG, agents, tool use",
+    "where": "Technical rounds with engineers; you must be credible, not hands-on deep"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "Evaluation: golden sets, quality metrics, error analysis, online experiments",
+    "where": "\"How do you know it works?\" is the standard AI PM question"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "Writing specs for non-deterministic features: PRDs with eval criteria and failure handling",
+    "where": "Product-sense and execution rounds"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at senior level",
+    "name": "AI UX and trust: uncertainty, citations, fallbacks, feedback loops, latency",
+    "where": "Design-partner and product-design rounds"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at senior level",
+    "name": "Economics: cost per request, latency, model choice, build vs buy, pricing",
+    "where": "Strategy rounds and cross-functional trade-offs"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at senior level",
+    "name": "Safety, privacy, governance: prompt injection, PII, regulation, red teaming",
+    "where": "Working with legal, security and trust teams"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at senior level",
+    "name": "Strategy and leadership: moats, roadmaps under uncertainty, stakeholder communication",
+    "where": "Group and lead PM roles"
+   },
+   {
+    "tier": "t3",
+    "tierLabel": "Know the name",
+    "name": "Fine-tuning, MCP, vector databases, model routing, distillation",
+    "where": "Occasional; one-line explanations are enough"
+   }
+  ],
+  "note": "Written from general knowledge of the role, not from a fresh scrape of postings. Treat the tiers as a starting point."
+ },
+ "conceptsLead": "Each card has the few points interviewers probe and a line you can say out loud. Skip anything not here.",
+ "toolsLead": "Know what each is for and when you would pick it. <span class=\"tier t1\">Use</span> means do it hands-on in the plan; <span class=\"tier t3\">Know</span> means a one-line explanation is enough.",
+ "concepts": [
+  {
+   "t": "How LLMs behave, for a PM",
+   "s": "Enough to be credible with engineers",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Models read and write tokens. Cost and latency scale with tokens in and out, and the context window caps what the model sees at once.",
+      "Output is probabilistic: the same input can give different answers, so you specify behaviour with examples and tests, not exact rules.",
+      "Hallucination is confident wrong output. You reduce it with grounding, constraints and checks; you never remove it entirely.",
+      "Quality, cost and latency trade against each other. Bigger models are usually better, slower and pricier."
+     ]
+    }
+   ],
+   "say": "I think of an LLM feature as a probabilistic component: I specify it with examples, measure it with an eval set, and design the product around its failure modes."
+  },
+  {
+   "t": "Is AI the right solution?",
+   "s": "The first question in most AI PM cases",
+   "subs": [
+    {
+     "h": "Framing",
+     "l": [
+      "Start from the user problem and the cost of a wrong answer, not from the model.",
+      "Compare options: a rule or a template, classic ML (prediction, ranking), or an LLM (language, unstructured input, open-ended output).",
+      "Good AI fits: tolerant of occasional errors, high volume, value from speed or personalisation, a human can review. Poor fits: zero-error tasks with no review.",
+      "Prioritise by impact, feasibility (data, accuracy needed, latency) and risk."
+     ]
+    }
+   ],
+   "say": "I ask what a wrong answer costs and who catches it. If the cost is low or a human reviews, AI is a candidate; otherwise I start with a simpler solution."
+  },
+  {
+   "t": "Prompting, structured output and tool use",
+   "s": "What you must be able to spec",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "A prompt is part of the product: system instructions, examples and constraints, versioned and tested like code.",
+      "Structured output (a JSON schema) lets downstream code rely on the answer. Tool or function calling lets the model request an action your code performs.",
+      "As PM you write the behaviour spec: tone, what to refuse, what to cite, how to handle missing information. Engineers turn it into prompts."
+     ]
+    }
+   ],
+   "say": "I write behaviour specs with good and bad examples, and I expect every prompt change to be tested against the same eval set."
+  },
+  {
+   "t": "RAG and grounding",
+   "s": "How products use company knowledge",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Retrieval-augmented generation fetches relevant passages and gives them to the model so answers come from your content, with citations.",
+      "Use RAG when knowledge changes often or must be traceable; fine-tuning is for style or format, not for facts.",
+      "Failure modes: the right document is never retrieved, stale content, ignoring the retrieved text, and leaking content a user should not see.",
+      "Product levers: which sources are in scope, freshness, permissions, and what the product does when nothing relevant is found."
+     ]
+    }
+   ],
+   "say": "Grounding is a product decision as much as a technical one: which sources, who can see what, and what we say when we do not know."
+  },
+  {
+   "t": "Agents and workflows",
+   "s": "How much autonomy to give",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "A workflow follows fixed steps with model calls. An agent lets the model choose steps and tools. Prefer a workflow unless the path really varies.",
+      "Autonomy is a dial: suggest, draft, act with approval, act alone. Raise it only as measured reliability and reversibility allow.",
+      "Risks compound across steps. Add approvals for irreversible actions, spending caps and clear logs of what the agent did."
+     ]
+    }
+   ],
+   "say": "I start with the lowest autonomy that still delivers value and earn higher autonomy with evidence and reversible actions."
+  },
+  {
+   "t": "Evaluation and quality metrics",
+   "s": "The standard AI PM question: how do you know it works?",
+   "subs": [
+    {
+     "h": "Offline",
+     "l": [
+      "A golden set of real and tricky cases with expected behaviour, scored by a rubric, by humans, or by an LLM judge that you spot-check against human labels.",
+      "Error analysis: read failures, group them, and fix the biggest group first. This guides the roadmap better than a single score."
+     ]
+    },
+    {
+     "h": "Online",
+     "l": [
+      "Task success, edit or accept rate, escalation to a human, thumbs up and down, retention, and guardrail metrics such as complaints or unsafe outputs.",
+      "A/B tests work, but sample quality by reading conversations too. Averages hide bad tails."
+     ]
+    }
+   ],
+   "say": "Nothing ships without a golden set and a pass bar written in the PRD, and every production failure becomes a new test case."
+  },
+  {
+   "t": "AI UX and trust",
+   "s": "Design for uncertainty",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Set expectations: say what the feature can and cannot do, and show confidence or sources where it helps.",
+      "Make correction cheap: edit, regenerate, undo, and give feedback in one click. Feedback is also your data.",
+      "Handle failure on purpose: \"I am not sure\", a fallback to search or a human, and no dead ends.",
+      "Latency is UX: stream partial answers, show progress, and cap long waits."
+     ]
+    }
+   ],
+   "say": "Trust is earned with sources, easy correction and honest failure states, and I design those before polishing the happy path."
+  },
+  {
+   "t": "Economics: cost, latency and build vs buy",
+   "s": "The numbers behind the roadmap",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Cost per request is roughly tokens in and out times price, plus retrieval and tooling. Multiply by usage and compare with revenue per user.",
+      "Levers: a smaller model for easy cases, caching, shorter prompts, and routing hard cases to a stronger model.",
+      "Build vs buy: use a vendor model or API to learn fast; build or fine-tune only for a clear gap in quality, cost, control or data residency.",
+      "Pricing options: bundled, usage-based or a premium tier. Watch heavy users who cost more than they pay."
+     ]
+    }
+   ],
+   "say": "I model unit economics early, route by difficulty to keep cost down, and revisit build vs buy when volume or quality needs change."
+  },
+  {
+   "t": "Safety, privacy and governance",
+   "s": "Where legal and security get involved",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Prompt injection: untrusted text can steer the model. Treat model output and tool actions as untrusted and limit permissions.",
+      "Privacy: know what data goes to which vendor, retention terms, and how personal data is handled and consented.",
+      "Regulation and policy: the EU AI Act and frameworks like the NIST AI RMF classify risk; high-risk uses need documentation and oversight. Confirm current rules with legal.",
+      "Red teaming: attack your own feature before launch and log what you fixed."
+     ]
+    }
+   ],
+   "say": "I involve legal and security at spec time, classify the feature by risk, and treat red-team findings as launch blockers."
+  },
+  {
+   "t": "AI product strategy and leadership",
+   "s": "What senior and group PM roles probe",
+   "subs": [
+    {
+     "h": "Be ready to describe",
+     "l": [
+      "Moats: proprietary data, distribution, deep workflow integration, and trust. Raw model access is not a moat because competitors can buy it.",
+      "Roadmaps under uncertainty: run small experiments, set quality gates, and plan for model upgrades that change what is possible.",
+      "Working with engineers, data scientists, designers and legal: shared eval sets, a clear owner for quality, and honest communication about limits.",
+      "Launch: staged rollout, guardrail metrics, a feedback loop, and a plan to roll back."
+     ]
+    }
+   ],
+   "say": "I own the outcome and the quality bar: I define success, make the trade-offs between quality, cost and risk visible, and stage launches so we learn safely."
+  }
+ ],
+ "tools": [
+  {
+   "group": "Prototyping and prompting",
+   "items": [
+    {
+     "name": "Claude and ChatGPT",
+     "what": "Fast prototypes of prompts and flows with real examples",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "Anthropic Console workbench",
+     "what": "Test prompts, system messages and structured output side by side",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "v0, Lovable, Bolt",
+     "what": "Generate clickable UI prototypes from a description",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "n8n, Zapier, Dify",
+     "what": "No-code workflow builders that call models and tools",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  },
+  {
+   "group": "Evaluation and observability",
+   "items": [
+    {
+     "name": "promptfoo",
+     "what": "Run a test set against prompts and models and compare results",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "LangSmith",
+     "what": "Tracing, datasets and experiments",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Langfuse",
+     "what": "Open-source tracing, cost tracking and prompt management",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Braintrust",
+     "what": "Evals and experiment tracking for AI products",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Arize Phoenix",
+     "what": "Open-source tracing and evaluation",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  },
+  {
+   "group": "Product analytics and data",
+   "items": [
+    {
+     "name": "SQL and a spreadsheet",
+     "what": "Slice usage and cost data yourself",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "PostHog, Amplitude, Mixpanel",
+     "what": "Funnels, retention and experiments",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  },
+  {
+   "group": "Concepts to name",
+   "items": [
+    {
+     "name": "MCP",
+     "what": "Standard way for models to connect to tools and data",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Vector databases",
+     "what": "Store embeddings for retrieval",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Fine-tuning",
+     "what": "Adjust a model for style, format or cost on a narrow task",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Model routing",
+     "what": "Send easy requests to cheaper models and hard ones to stronger models",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  }
+ ],
+ "toolLinks": {
+  "Anthropic Console workbench": "https://console.anthropic.com/",
+  "promptfoo": "https://www.promptfoo.dev/docs/intro/",
+  "LangSmith": "https://docs.langchain.com/langsmith/evaluation-concepts",
+  "Langfuse": "https://langfuse.com/docs",
+  "Braintrust": "https://www.braintrust.dev/docs",
+  "Arize Phoenix": "https://docs.arize.com/phoenix",
+  "n8n, Zapier, Dify": "https://docs.n8n.io/",
+  "PostHog, Amplitude, Mixpanel": "https://posthog.com/docs",
+  "MCP": "https://modelcontextprotocol.io/introduction"
+ },
+ "plan": {
+  "lead": "Weekdays are 3 hours and weekends 5 hours. Weekdays are for reading and short exercises, weekends for the project and mock interviews. One project ties the track together so you can say \"I shipped this spec\". Select a week to jump to it. Ticks are saved to your account.",
+  "project": [
+   {
+    "slice": "Problem and PRD",
+    "what": "One AI feature for a support or knowledge assistant: problem brief, success metrics, PRD with eval criteria",
+    "week": "1 and 6"
+   },
+   {
+    "slice": "Prototype",
+    "what": "Working prompt and a grounded answer flow over a small document set, in a chat tool or no-code builder",
+    "week": "1 to 2"
+   },
+   {
+    "slice": "Quality",
+    "what": "30-case golden set, a scoring rubric, a run in promptfoo or LangSmith, and an error-analysis table",
+    "week": "3"
+   },
+   {
+    "slice": "Trust and safety",
+    "what": "Failure-state designs, a 10-prompt red-team log, a risk and mitigation list",
+    "week": "4"
+   },
+   {
+    "slice": "Economics and launch",
+    "what": "Cost-per-request sheet, build vs buy note, rollout plan with guardrail metrics",
+    "week": "5 to 6"
+   }
+  ],
+  "note": "Short on time: skip the fine-tuning and MCP notes and one case drill. Keep the project and the mock interviews. Each week is 5 weekdays at 3 h plus a weekend of 10 h, shown as 7 tasks."
+ },
+ "weeks": [
+  {
+   "n": 1,
+   "t": "Foundations, prompting and use-case framing",
+   "o": "Problem brief and a working prompt prototype",
+   "tasks": [
+    "3|Read concepts 2.1 and 2.2; watch the Karpathy intro video",
+    "3|Read concept 2.3; try structured output in a chat tool",
+    "3|Pick the project feature (support or knowledge assistant) and list user problems",
+    "3|Write the problem brief: user, pain, success metric, cost of a wrong answer",
+    "3|Compare rule, classic ML and LLM for the feature in a short table",
+    "6|Build the prompt prototype with 10 real example questions",
+    "4|Review the prototype failures; note what the PRD must cover"
+   ]
+  },
+  {
+   "n": 2,
+   "t": "RAG, agents and capabilities",
+   "o": "Grounded prototype and an autonomy decision",
+   "tasks": [
+    "3|Read concept 2.4; read the RAG paper abstract and intro",
+    "3|Collect 8 to 10 documents and decide which sources are in scope",
+    "3|Read concept 2.5 and the Anthropic agents article",
+    "3|Decide the autonomy level for your feature and what needs approval",
+    "3|Write what the product does when nothing relevant is found",
+    "6|Prototype grounded answers with citations over your documents",
+    "4|Test 15 questions; log wrong, missing and ungrounded answers"
+   ]
+  },
+  {
+   "n": 3,
+   "t": "Evaluation and quality",
+   "o": "Golden set, rubric and an error-analysis table",
+   "tasks": [
+    "3|Read concept 2.6 and the Hamel Husain evals article",
+    "3|Write a scoring rubric: correct, grounded, safe, tone",
+    "3|Draft 15 golden cases covering normal and tricky inputs",
+    "3|Extend to 30 cases including refusals and out-of-scope questions",
+    "3|Set up promptfoo or LangSmith and run the set",
+    "6|Do error analysis: group failures and rank them by impact",
+    "4|Write the pass bar and online metrics for the PRD"
+   ]
+  },
+  {
+   "n": 4,
+   "t": "AI UX, trust and safety",
+   "o": "Failure-state designs and a red-team log",
+   "tasks": [
+    "3|Read concept 2.7 and the Google PAIR guidebook sections on trust and errors",
+    "3|Sketch the happy path with sources, feedback and correction",
+    "3|Design three failure states: unsure, wrong, unavailable",
+    "3|Read concept 2.9 and the OWASP LLM Top 10 list",
+    "3|List data flows, vendors and personal data in your feature",
+    "6|Red-team your prototype with 10 attacks; log fixes",
+    "4|Write the risk and mitigation list and name who signs off"
+   ]
+  },
+  {
+   "n": 5,
+   "t": "Economics and strategy",
+   "o": "Unit-economics sheet and a strategy note",
+   "tasks": [
+    "3|Read concept 2.8; list cost components for one request",
+    "3|Build the cost-per-request sheet with three usage scenarios",
+    "3|Write a build vs buy note with a trigger for revisiting it",
+    "3|Read concept 2.10; write a one-paragraph moat statement",
+    "3|Draft a 3-quarter roadmap with quality gates between steps",
+    "6|Price the feature: options, margin, and heavy-user risk",
+    "4|Present the economics and strategy aloud in 10 minutes"
+   ]
+  },
+  {
+   "n": 6,
+   "t": "PRD, launch and interview practice",
+   "o": "Finished PRD, rollout plan and mock interviews done",
+   "tasks": [
+    "3|Write the PRD: problem, users, behaviour spec, eval criteria, failure handling",
+    "3|Write the rollout plan: stages, guardrail metrics, rollback",
+    "3|Prepare 5 stories on AI trade-offs, a failure, and a launch",
+    "3|Drill 3 AI product-sense cases out loud",
+    "3|Drill 2 AI strategy and metrics cases out loud",
+    "6|Two full mock interviews with a peer; collect feedback",
+    "4|Revise answers and re-read the weak concepts"
+   ]
+  }
+ ],
+ "sources": {
+  "lead": "Links were chosen from well-known, stable sources and were not opened one by one while building this track, so tell me if any is dead. Blogs and talks reflect their authors\\' views.",
+  "items": [
+   {
+    "title": "Google People + AI Guidebook",
+    "url": "https://pair.withgoogle.com/guidebook/"
+   },
+   {
+    "title": "Building effective agents (Anthropic)",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents"
+   },
+   {
+    "title": "Your AI Product Needs Evals (Hamel Husain)",
+    "url": "https://hamel.dev/blog/posts/evals/"
+   },
+   {
+    "title": "A Field Guide to Rapidly Improving AI Products (Hamel Husain)",
+    "url": "https://hamel.dev/blog/posts/field-guide/"
+   },
+   {
+    "title": "Intro to Large Language Models (Karpathy)",
+    "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g"
+   },
+   {
+    "title": "OWASP Top 10 for LLM Applications",
+    "url": "https://genai.owasp.org/llm-top-10/"
+   },
+   {
+    "title": "NIST AI Risk Management Framework",
+    "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+   },
+   {
+    "title": "Silicon Valley Product Group",
+    "url": "https://www.svpg.com/"
+   },
+   {
+    "title": "Lenny's Newsletter",
+    "url": "https://www.lennysnewsletter.com/"
+   },
+   {
+    "title": "Chip Huyen's blog",
+    "url": "https://huyenchip.com/blog/"
+   },
+   {
+    "title": "Prompt Engineering Guide",
+    "url": "https://www.promptingguide.ai/"
+   }
+  ]
+ },
+ "res": [
+  [
+   {
+    "type": "V",
+    "title": "Intro to Large Language Models (Karpathy, 1 h)",
+    "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+    "why": "Best single overview for non-engineers"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "Google People + AI Guidebook",
+    "url": "https://pair.withgoogle.com/guidebook/",
+    "why": "Chapters on when to use AI and what users need"
+   },
+   {
+    "type": "A",
+    "title": "Silicon Valley Product Group",
+    "url": "https://www.svpg.com/",
+    "why": "General product discovery thinking that carries over to AI"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "Prompt engineering overview (Anthropic)",
+    "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+    "why": "Clear instructions, examples, structure"
+   },
+   {
+    "type": "D",
+    "title": "Tool use overview (Anthropic)",
+    "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview",
+    "why": "How the function-calling loop works"
+   },
+   {
+    "type": "D",
+    "title": "Prompt Engineering Guide",
+    "url": "https://www.promptingguide.ai/",
+    "why": "Techniques with examples"
+   }
+  ],
+  [
+   {
+    "type": "P",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "url": "https://arxiv.org/abs/2005.11401",
+    "why": "The original RAG paper; abstract and intro are enough"
+   },
+   {
+    "type": "A",
+    "title": "Introducing Contextual Retrieval (Anthropic)",
+    "url": "https://anthropic.com/news/contextual-retrieval",
+    "why": "Why retrieval quality matters, with numbers"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "Building effective agents (Anthropic)",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents",
+    "why": "Workflows vs agents; read this first"
+   },
+   {
+    "type": "D",
+    "title": "MCP introduction",
+    "url": "https://modelcontextprotocol.io/introduction",
+    "why": "What MCP is, at overview level"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "Your AI Product Needs Evals (Hamel Husain)",
+    "url": "https://hamel.dev/blog/posts/evals/",
+    "why": "Practical start for evals"
+   },
+   {
+    "type": "A",
+    "title": "A Field Guide to Rapidly Improving AI Products (Hamel Husain)",
+    "url": "https://hamel.dev/blog/posts/field-guide/",
+    "why": "Error analysis and metrics"
+   },
+   {
+    "type": "D",
+    "title": "promptfoo introduction",
+    "url": "https://www.promptfoo.dev/docs/intro/",
+    "why": "Run test sets against prompts and models"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "Google People + AI Guidebook",
+    "url": "https://pair.withgoogle.com/guidebook/",
+    "why": "Explainability, trust, errors and feedback patterns"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "Chip Huyen's blog",
+    "url": "https://huyenchip.com/blog/",
+    "why": "Platform and cost trade-offs in AI products"
+   },
+   {
+    "type": "A",
+    "title": "Lenny's Newsletter",
+    "url": "https://www.lennysnewsletter.com/",
+    "why": "Search for AI product and pricing posts"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "OWASP Top 10 for LLM Applications",
+    "url": "https://genai.owasp.org/llm-top-10/",
+    "why": "Prompt injection, excessive agency, output handling"
+   },
+   {
+    "type": "D",
+    "title": "NIST AI Risk Management Framework",
+    "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+    "why": "Govern, Map, Measure, Manage"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "Silicon Valley Product Group",
+    "url": "https://www.svpg.com/",
+    "why": "Product strategy and leadership essays"
+   },
+   {
+    "type": "A",
+    "title": "Lenny's Newsletter",
+    "url": "https://www.lennysnewsletter.com/",
+    "why": "Search for roadmap and AI strategy posts"
+   }
+  ]
+ ],
+ "rtype": {
+  "V": [
+   "Video",
+   "video"
+  ],
+  "D": [
+   "Docs",
+   "docs"
+  ],
+  "P": [
+   "Paper",
+   "paper"
+  ],
+  "A": [
+   "Article",
+   "article"
+  ],
+  "C": [
+   "Course",
+   "course"
+  ]
+ }
+}

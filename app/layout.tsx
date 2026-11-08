@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import "./globals.css";
 import { baseVariables } from "@/lib/clerk-appearance";
+import ThemeRegistry from "./ThemeRegistry";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Preppy",
@@ -11,8 +14,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider appearance={{ variables: baseVariables }}>
-      <html lang="en">
-        <body>{children}</body>
+      <html lang="en" className={inter.variable}>
+        <body>
+          <ThemeRegistry>{children}</ThemeRegistry>
+        </body>
       </html>
     </ClerkProvider>
   );

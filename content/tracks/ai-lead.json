@@ -1,0 +1,973 @@
+{
+ "id": "ai-lead",
+ "title": "AI Lead",
+ "hero": {
+  "h1": "AI lead interviews: only what job descriptions ask for",
+  "p": "You already know Python and infra, so this skips tutorials. It covers the concepts and tools that show up again and again in AI lead and manager job descriptions, at interview depth, with a 6-week plan of 3 hours on weekdays and 5 on weekends.",
+  "chips": [
+   "13 concepts",
+   "about 25 tools",
+   "1 mini project",
+   "150 hours"
+  ]
+ },
+ "jd": {
+  "lead": "Job-posting analyses agree on the core. In 4,155 AI Engineer postings, LLMs appeared in 55.5%, agents in 47.3%, generative AI in 40.6%, RAG in 39.6%, vector databases in 24.5%, LangChain in 23.4% and MLOps in 20% (<a href=\"https://interviewstack.io/blog/how-ai-is-changing-ai-engineer-2026\">InterviewStack</a>). In another set of 390 postings, 56% mentioned AI evaluation, 50% agents and 26% RAG (<a href=\"https://kdnuggets.com/the-ai-skills-that-actually-show-up-in-job-postings-right-now\">KDnuggets</a>). LinkedIn lists LangChain, RAG and PyTorch as the most common AI engineer skills (<a href=\"https://www.dice.com/career-advice/ai-related-jobs-top-linkedins-fastest-growing-roles-list-for-2026\">Dice</a>).",
+  "rows": [
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "LLM basics, prompting, structured output, function calling",
+    "where": "Nearly every JD; \"tool/function calling\" and \"prompt engineering\" are listed in lead and manager roles"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "RAG architecture and vector databases (Pinecone, Weaviate, Qdrant, Milvus, FAISS, Chroma, pgvector)",
+    "where": "The most repeated requirement in lead JDs, including embeddings, hybrid search and reranking"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "Agents and orchestration: LangChain and LangGraph",
+    "where": "Named directly in manager and lead JDs, often with CrewAI, AutoGen or the OpenAI Agents SDK"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "LLM evaluation: RAGAS, DeepEval, LangSmith, Arize Phoenix",
+    "where": "JDs ask for accuracy, groundedness, hallucination, toxicity, safety and task-completion metrics"
+   },
+   {
+    "tier": "t1",
+    "tierLabel": "Must know",
+    "name": "Cloud, Docker, Kubernetes, CI/CD",
+    "where": "AWS, Azure or GCP plus containers and CI/CD appear in nearly all lead JDs (your strength)"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at lead level",
+    "name": "LLMOps: monitoring, tracing, versioning, guardrails, cost engineering",
+    "where": "Lead JDs mention model routing, prompt optimisation, caching and token accounting"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at lead level",
+    "name": "MCP, human-in-the-loop, agent memory",
+    "where": "Appear in recent manager JDs alongside vLLM and Hugging Face"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at lead level",
+    "name": "Fine-tuning basics: SFT, LoRA, instruction tuning",
+    "where": "Listed as part of the stack, usually not the main focus"
+   },
+   {
+    "tier": "t2",
+    "tierLabel": "Expected at lead level",
+    "name": "Leadership: eval strategy, CI/CD for AI, build vs buy, stakeholder talks, mentoring, responsible AI",
+    "where": "Every lead and manager JD"
+   },
+   {
+    "tier": "t3",
+    "tierLabel": "Know the name",
+    "name": "A2A, multimodal RAG, Terraform, Kafka, PyTorch internals",
+    "where": "Occasional or \"good to have\""
+   }
+  ],
+  "note": "Examples read: Engineering Manager at <a href=\"https://incareers-jaggaer.icims.com/jobs/4008/engineering-manager-%e2%80%93-agentic-%26-ai-systems/job\">JAGGAER</a>, AI Engineering Manager at <a href=\"https://jobs.weekday.works/wkdysd5zh9\">Questhiring</a>, Manager AI Engineering at <a href=\"https://wellfound.com/jobs/4524890-manager-ai-engineering\">Lenovo</a>, <a href=\"https://careers.epam.com/en/vacancy/lead-ai-engineer-agentic-and-rag-systems-blt0gwqdcd06g43wvh3_en\">EPAM Lead AI Engineer</a>, <a href=\"https://apply.workable.com/keywords-intl1/jobs/view/91E59A0696.md\">Keywords Studios Lead AI Engineer</a>. A 30-posting review gives the same must-have list: Python, SQL, RAG, prompt engineering, one orchestration framework, vector databases, Docker and FastAPI (<a href=\"https://timroller.github.io/2026/04/08/ai-engineer-skill-tree.html\">source</a>)."
+ },
+ "conceptsLead": "Each card has the few points interviewers probe and a line you can say out loud. Skip anything not here.",
+ "toolsLead": "Know what each is for and when you would pick it. <span class=\"tier t1\">Use</span> means do it hands-on in the plan; <span class=\"tier t3\">Know</span> means a one-line explanation is enough.",
+ "concepts": [
+  {
+   "t": "LLM basics",
+   "s": "Tokens, context, decoding, training stages",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Tokens and the context window; cost and latency scale with tokens. Decode is token by token and drives latency; prefill processes the prompt.",
+      "Temperature and top-p control randomness. Hallucination is confident wrong output, reduced by grounding and evals.",
+      "Training stages: pretraining, instruction tuning, preference tuning (RLHF or similar). Reasoning models trade latency and cost for accuracy."
+     ]
+    }
+   ],
+   "say": "Cost and latency come from tokens, so I measure tokens per request and design prompts and caching around that."
+  },
+  {
+   "t": "Prompting, structured output and function calling",
+   "s": "Listed in nearly every lead JD",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "System prompt, few-shot examples, and prompts as versioned code.",
+      "Structured output: JSON schema or Pydantic models with validation and a retry.",
+      "Function (tool) calling loop: model proposes a call, your code runs it, result goes back. Tools are described by schema.",
+      "Prompt injection is the main risk when tools or retrieved text can steer the model."
+     ]
+    }
+   ],
+   "say": "I treat prompts like code: versioned, tested against a golden set, and never trusted with permissions."
+  },
+  {
+   "t": "RAG architecture",
+   "s": "The most repeated requirement",
+   "subs": [
+    {
+     "h": "Pipeline",
+     "l": [
+      "Ingest, chunk, embed, index, retrieve, rerank, generate with citations.",
+      "Hybrid search (keyword plus vector) with reciprocal rank fusion, then a cross-encoder reranker.",
+      "Chunk size and overlap trade recall against noise. Metadata filters narrow results."
+     ]
+    },
+    {
+     "h": "Failure modes and extensions",
+     "l": [
+      "Stale data, bad chunks, retrieval misses, access-control leaks, and answers that ignore the context.",
+      "Enterprise RAG means governed knowledge: freshness, access control at retrieval, and an audit trail (<a href=\"https://www.stack-ai.com/insights/top-10-enterprise-ai-trends-to-watch-in-2026\">StackAI</a>).",
+      "Know the terms multimodal RAG and CAG (cache-augmented generation); both appear in JDs."
+     ]
+    }
+   ],
+   "say": "I fix retrieval before touching the prompt, enforce permissions at retrieval, and measure with a golden set."
+  },
+  {
+   "t": "Vector databases",
+   "s": "Pick by constraint, not by hype",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Embeddings are indexed with HNSW or IVF; scalar quantisation is common. Filtered search and hybrid search are now table stakes (<a href=\"https://noqta.tn/blog/vector-database-comparison-2026-pgvector-pinecone-qdrant-weaviate\">source</a>).",
+      "pgvector if you already run Postgres and have under about 10M vectors. Qdrant for filter-heavy high-QPS search. Weaviate when hybrid search is central. Pinecone for zero ops. Milvus for billion scale. Chroma for prototypes. FAISS is a library, not a database."
+     ]
+    }
+   ],
+   "say": "I start with pgvector for simplicity and move to a dedicated store when scale, filtering or hybrid needs prove it."
+  },
+  {
+   "t": "Agents and orchestration",
+   "s": "Workflows vs agents, and the frameworks",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Workflow: fixed steps with LLM calls. Agent: the model chooses steps. Prefer the workflow unless the path really varies.",
+      "Patterns: tool-use loop, planner and executor, router, supervisor with sub-agents, reflection loop, human-in-the-loop approval, memory.",
+      "Frameworks named in JDs: LangChain, LangGraph, CrewAI, AutoGen, OpenAI Agents SDK. LangGraph is described as the most production-hardened; CrewAI as the quick prototype; AutoGen reported in maintenance mode (<a href=\"https://www.raftlabs.com/blog/ai-agent-framework-comparison\">RaftLabs</a>).",
+      "Limits: runaway loops and cost, so set step and spend caps."
+     ]
+    }
+   ],
+   "say": "I use the simplest thing that works, and add durable state, approvals and caps when an agent touches real systems."
+  },
+  {
+   "t": "LangChain, LangGraph, LangSmith",
+   "s": "The most-named trio",
+   "subs": [
+    {
+     "h": "LangChain 1.0",
+     "l": [
+      "Stable 1.0 release, with no breaking changes promised until 2.0 (<a href=\"https://changelog.langchain.com/announcements/ann_j9EkbzqXXeNod\">changelog</a>).",
+      "create_agent is the standard agent; it runs on LangGraph and replaces the old create_react_agent (<a href=\"https://docs.langchain.com/oss/python/releases/langgraph-v1\">docs</a>). Middleware adds hooks such as summarisation and PII redaction.",
+      "Old tutorials use chains and AgentExecutor, which moved to langchain-classic."
+     ]
+    },
+    {
+     "h": "LangGraph",
+     "l": [
+      "Typed state, nodes, edges and conditional edges.",
+      "Checkpointing and durable execution, human-in-the-loop interrupts, time-travel debugging, subgraphs for multi-agent.",
+      "Use it when you need control, approvals or resumability; use create_agent for a standard loop."
+     ]
+    },
+    {
+     "h": "LangSmith",
+     "l": [
+      "Tracing, datasets, experiments, evaluators, prompt management and deployment (<a href=\"https://kb.langchain.com/articles/8854797554-what-is-langsmith\">LangChain KB</a>).",
+      "Works without LangChain through SDK wrappers or OpenTelemetry. Alternatives: Langfuse (open source, self-hostable) and Arize Phoenix."
+     ]
+    }
+   ],
+   "say": "LangChain gets me an agent fast, LangGraph gives durable state and approvals, and LangSmith gives traces and evals. I keep tracing portable on OpenTelemetry."
+  },
+  {
+   "t": "MCP and A2A",
+   "s": "Tool standards",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "MCP connects an agent to tools, resources and prompts. A2A connects agents to each other. Both sit under the Linux Foundation (<a href=\"https://lyzr.ai/?p=133311\">Lyzr</a>).",
+      "Risks: tool-name collisions and indirect prompt injection through tool results.",
+      "Your angle: wrap internal REST or Java services as MCP servers with scoped permissions."
+     ]
+    }
+   ],
+   "say": "MCP is the integration layer for agents, and my API background means I can expose internal systems safely."
+  },
+  {
+   "t": "LLM evaluation",
+   "s": "Appears in more than half of postings",
+   "subs": [
+    {
+     "h": "Metrics",
+     "l": [
+      "RAG: context precision and recall, faithfulness, answer relevance. General: accuracy, hallucination, toxicity, safety, task completion."
+     ]
+    },
+    {
+     "h": "Tools and process",
+     "l": [
+      "RAGAS has the most RAG metrics; DeepEval runs as pytest-style tests that fail a build; promptfoo adds red teaming; LangSmith and Phoenix run experiments and tracing (<a href=\"https://www.testmuai.com/blog/rag-evaluation-tools/\">TestMu</a>).",
+      "Golden set from real queries, LLM-as-judge calibrated against human labels, a CI gate on every prompt or model change, and sampled online scoring."
+     ]
+    }
+   ],
+   "say": "No prompt or model change merges without passing the eval gate, and every production failure becomes a new test case."
+  },
+  {
+   "t": "LLMOps: observability, gateway, guardrails, cost",
+   "s": "The lead-level layer",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "Observability: traces with prompt, retrieval, tool calls, tokens and cost on OpenTelemetry, whose GenAI conventions are still in Development status (<a href=\"https://middleware.io/blog/opentelemetry-for-llms/\">Middleware</a>).",
+      "Gateway: routing, fallback, caching, budgets. LiteLLM is self-hosted; Portkey was acquired by Palo Alto Networks (<a href=\"https://dupple.com/learn/best-llm-gateways\">Dupple</a>).",
+      "Guardrails: input (injection, PII), output (groundedness, leaks, schema) and tool (allow-lists, approvals) layers, enforced at the gateway and in the agent loop. Tools: NeMo Guardrails, Llama Guard, Guardrails AI, Presidio.",
+      "Cost engineering: model routing, prompt trimming, caching, token accounting, batch APIs."
+     ]
+    }
+   ],
+   "say": "I trace every request with its cost, route to the cheapest model that passes the eval, and log every guardrail block."
+  },
+  {
+   "t": "Serving and infrastructure",
+   "s": "Your strongest ground",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "vLLM is the de facto open-source engine (PagedAttention, continuous batching, KV cache); SGLang is the challenger; Ollama and llama.cpp for local use (<a href=\"https://futurumgroup.com/insights/vllm-becomes-production-infrastructure-at-pytorch-conference-2026/\">Futurum</a>).",
+      "On Kubernetes: GPU scheduling, autoscaling on queue depth or tokens per second, weight caching, cold starts, quantisation.",
+      "Managed options: Bedrock, Azure OpenAI, Vertex. Choose by data residency, cost per task, latency and ops burden."
+     ]
+    }
+   ],
+   "say": "I would start on a managed API behind a gateway and self-host with vLLM when volume, cost or residency justifies it."
+  },
+  {
+   "t": "Fine-tuning basics",
+   "s": "Listed, rarely the focus",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "SFT, instruction tuning, LoRA and QLoRA, and distillation.",
+      "Rule: prompt first, RAG for knowledge, fine-tune for style, format or cost on a narrow task."
+     ]
+    }
+   ],
+   "say": "Fine-tuning is for behaviour or cost; knowledge belongs in retrieval."
+  },
+  {
+   "t": "Security, safety and governance",
+   "s": "Responsible AI shows up in lead JDs",
+   "subs": [
+    {
+     "h": "Know",
+     "l": [
+      "OWASP LLM Top 10, led by prompt injection; least-privilege agent identity; PII handling.",
+      "EU AI Act: general-purpose model duties already apply and regulators now have enforcement powers (<a href=\"https://labs.cloudsecurityalliance.org/research/csa-research-note-eu-ai-act-gpai-enforcement-20260509-csa-st/\">CSA</a>); reports say the high-risk obligations are being pushed back (<a href=\"https://www.safebreach.com/?p=161192\">SafeBreach</a>), so confirm the current timeline. Know NIST AI RMF by name."
+     ]
+    }
+   ],
+   "say": "I inventory AI systems, classify by risk, and build logging and oversight now because retrofitting is expensive."
+  },
+  {
+   "t": "Lead-level expectations",
+   "s": "What the JD lines on leadership translate to",
+   "subs": [
+    {
+     "h": "Be ready to describe",
+     "l": [
+      "How you define an eval framework and make it part of CI/CD.",
+      "Build vs buy and model strategy with cost numbers.",
+      "Team shape: a small platform group for gateway, evals and guardrails, with embedded engineers building use cases.",
+      "Metrics: quality score, adoption, cost per task, incident rate, time to ship a prompt change.",
+      "Translating business goals into delivery plans for product and executives."
+     ]
+    }
+   ],
+   "say": "I own quality, cost and risk for AI features, and I measure them the same way I measure any production service."
+  }
+ ],
+ "tools": [
+  {
+   "group": "Frameworks",
+   "items": [
+    {
+     "name": "LangChain 1.0",
+     "what": "Agent harness with tools and middleware",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "LangGraph",
+     "what": "Stateful graphs, checkpoints, approvals",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "LlamaIndex",
+     "what": "Data connectors and RAG-focused agents",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "CrewAI",
+     "what": "Role-based agent teams, quick prototypes",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "OpenAI Agents SDK",
+     "what": "Minimal agent loop, handoffs, guardrails (OpenAI-first)",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "AutoGen",
+     "what": "Multi-agent conversations; reported in maintenance mode",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Spring AI 2.0 and LangChain4j",
+     "what": "Java frameworks: ChatClient with advisors, AI Services",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  },
+  {
+   "group": "Retrieval",
+   "items": [
+    {
+     "name": "pgvector",
+     "what": "Vectors inside Postgres",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "Pinecone, Weaviate, Qdrant, Milvus",
+     "what": "Dedicated vector databases",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "FAISS, Chroma",
+     "what": "Vector library and a local prototyping DB",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  },
+  {
+   "group": "Evaluation and observability",
+   "items": [
+    {
+     "name": "RAGAS",
+     "what": "RAG metrics",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "DeepEval",
+     "what": "Pytest-style LLM tests for CI",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "LangSmith",
+     "what": "Tracing, datasets, experiments",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "Arize Phoenix, Langfuse",
+     "what": "Open-source tracing and eval debugging",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "promptfoo",
+     "what": "Prompt test matrices and red teaming",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "OpenTelemetry GenAI",
+     "what": "Vendor-neutral tracing for LLM calls",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  },
+  {
+   "group": "Platform",
+   "items": [
+    {
+     "name": "LiteLLM",
+     "what": "Self-hosted gateway: routing, fallback, budgets",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "Portkey, Kong AI Gateway",
+     "what": "Gateways with guardrails or API-gateway fit",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "NeMo Guardrails, Llama Guard, Guardrails AI, Presidio",
+     "what": "Safety and PII layers",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "vLLM",
+     "what": "High-throughput open-source serving",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "Hugging Face, PyTorch",
+     "what": "Model hub and framework; usually read-only knowledge for a lead",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "Bedrock, Azure OpenAI, Vertex",
+     "what": "Managed model platforms",
+     "tier": "t3",
+     "depth": "Know"
+    },
+    {
+     "name": "MCP",
+     "what": "Agent-to-tool protocol",
+     "tier": "t1",
+     "depth": "Use"
+    },
+    {
+     "name": "A2A",
+     "what": "Agent-to-agent protocol",
+     "tier": "t3",
+     "depth": "Know"
+    }
+   ]
+  }
+ ],
+ "toolLinks": {
+  "LangChain 1.0": "https://changelog.langchain.com/announcements/ann_j9EkbzqXXeNod",
+  "LangGraph": "https://docs.langchain.com/oss/python/langgraph/persistence",
+  "LangSmith": "https://docs.langchain.com/langsmith/evaluation-concepts",
+  "pgvector": "https://github.com/pgvector/pgvector",
+  "RAGAS": "https://docs.ragas.io/en/latest/concepts/metrics/",
+  "DeepEval": "https://deepeval.com/docs/getting-started",
+  "LiteLLM": "https://docs.litellm.ai/docs/observability/opentelemetry_v2",
+  "vLLM": "https://docs.vllm.ai/en/latest/getting_started/quickstart.html",
+  "MCP": "https://modelcontextprotocol.io/introduction",
+  "A2A": "https://a2a-protocol.org",
+  "OpenTelemetry GenAI": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+  "Arize Phoenix, Langfuse": "https://langfuse.com/docs/integrations/litellm",
+  "NeMo Guardrails, Llama Guard, Guardrails AI, Presidio": "https://docs.nvidia.com/nemo/guardrails/"
+ },
+ "plan": {
+  "lead": "Weekdays are 3 hours and weekends 5 hours. Suggested split: weekdays for reading and short labs, weekends for the build and review blocks. One small project ties the tools together so you can say \"I built this\". Select a week to jump to it. Ticks are saved to your account.",
+  "project": [
+   {
+    "slice": "Runbook assistant",
+    "what": "RAG over a few runbooks with pgvector, hybrid search, reranking, citations",
+    "week": "1 to 2"
+   },
+   {
+    "slice": "Agent",
+    "what": "LangGraph agent with 2 tools, human approval before any action, an MCP tool server, traced in LangSmith",
+    "week": "3"
+   },
+   {
+    "slice": "Quality and safety",
+    "what": "30-question golden set scored with RAGAS or DeepEval in CI, LiteLLM gateway with fallback, input and output guardrails",
+    "week": "4 to 5"
+   },
+   {
+    "slice": "Platform story",
+    "what": "One-page architecture covering serving (vLLM or managed), Kubernetes, cost and security",
+    "week": "5 to 6"
+   }
+  ],
+  "note": "Short on time: skip the A2A reading, the fine-tuning note and one system-design drill. Keep the project and the mock interviews. Each week is 5 weekdays at 3 h plus a weekend of 10 h, shown as 7 tasks."
+ },
+ "weeks": [
+  {
+   "n": 1,
+   "t": "Foundations, prompting, RAG basics",
+   "o": "Structured-output lab done and RAG v1 answering with citations",
+   "tasks": [
+    "3|Read concepts 2.1 and 2.2; watch the Karpathy intro video",
+    "3|Lab: structured output with a schema and a validation retry",
+    "3|Lab: function calling loop with two tools",
+    "3|Read concept 2.3 and the RAG paper abstract; sketch the pipeline",
+    "3|Set up Postgres with pgvector; load a few runbooks and chunk them",
+    "6|Build RAG v1: embed, retrieve, generate with citations",
+    "4|Write 10 test questions and try them; note the failures"
+   ]
+  },
+  {
+   "n": 2,
+   "t": "RAG in depth and vector databases",
+   "o": "Hybrid search with reranking, vector-DB choice rule, fine-tuning note",
+   "tasks": [
+    "3|Read concept 2.4; write a one-paragraph vector-DB choice rule",
+    "3|Add hybrid search (full-text plus vector) with rank fusion",
+    "3|Add a reranker; compare before and after on your 10 questions",
+    "3|Read Anthropic's contextual retrieval post; try it on one document",
+    "3|Add permission filtering at retrieval time; write the failure modes list",
+    "5|Read concept 2.11 on fine-tuning; write a prompt vs RAG vs fine-tune note",
+    "5|Polish RAG v1 and explain it aloud in 5 minutes"
+   ]
+  },
+  {
+   "n": 3,
+   "t": "Agents: LangChain, LangGraph, LangSmith",
+   "o": "LangGraph agent with approval step, traced in LangSmith",
+   "tasks": [
+    "3|Read concepts 2.5 and 2.6; read Building effective agents",
+    "3|LangChain 1.0: create_agent with two tools and one middleware",
+    "3|LangGraph: state, nodes and conditional edges",
+    "3|LangGraph: add a checkpointer and a human-approval interrupt",
+    "3|LangSmith: trace the agent end to end",
+    "5|LangSmith: build a 10-case dataset and run one experiment",
+    "5|Write a LangGraph vs CrewAI vs OpenAI Agents SDK note and practise explaining it"
+   ]
+  },
+  {
+   "n": 4,
+   "t": "MCP, A2A and evals",
+   "o": "MCP tool server, golden set scored in CI",
+   "tasks": [
+    "3|Read concept 2.7; build a small MCP server around a REST or Java API",
+    "3|Call the MCP server from your agent; add scoped permissions",
+    "3|Read about A2A and write the MCP vs A2A difference in two lines",
+    "3|Read concept 2.8; read Your AI Product Needs Evals",
+    "3|Write the 30-question golden set from real-looking queries",
+    "5|Score it with RAGAS or DeepEval and run it in CI",
+    "5|Calibrate an LLM judge against your own labels; note its biases"
+   ]
+  },
+  {
+   "n": 5,
+   "t": "LLMOps, guardrails, cost and serving",
+   "o": "Gateway with fallback, guardrails, local vLLM call, cost note",
+   "tasks": [
+    "3|Read concept 2.9; add OpenTelemetry tracing and compare LangSmith, Langfuse and Phoenix",
+    "3|LiteLLM gateway in front of two models with fallback",
+    "3|Add a budget and caching to the gateway; write a cost note",
+    "3|Add input and output guardrails and a PII check",
+    "3|Run a promptfoo red-team pass; log the blocks",
+    "5|Read concept 2.10; run vLLM or Ollama locally and call it through the gateway",
+    "5|Draw the Kubernetes and managed-vs-self-host architecture with autoscaling and cost"
+   ]
+  },
+  {
+   "n": 6,
+   "t": "Security, leadership and mocks",
+   "o": "Build-vs-buy memo, 90-day plan, 3 mock interviews done",
+   "tasks": [
+    "3|Read concepts 2.12 and 2.13; threat-model the project",
+    "3|Write a build-vs-buy memo with numbers",
+    "3|Write a 90-day plan, team shape and metrics",
+    "3|System design drill: enterprise RAG assistant",
+    "3|System design drill: LLM platform with gateway and evals",
+    "5|Mock 1: technical round (90 minutes) and fix gaps; say each interview line aloud",
+    "5|Mock 2: leadership round, then mock 3: system design (60 minutes)"
+   ]
+  }
+ ],
+ "sources": {
+  "lead": "Read from search results (snippets, not full pages). Study-material links in section 2 and 3 came from the same searches and were not opened one by one, so tell me if any is dead. Many are blogs or job boards, so treat figures as directional.",
+  "items": [
+   {
+    "title": "AI Engineer skills in 4,155 postings (InterviewStack)",
+    "url": "https://interviewstack.io/blog/how-ai-is-changing-ai-engineer-2026"
+   },
+   {
+    "title": "AI skills in job postings (KDnuggets)",
+    "url": "https://kdnuggets.com/the-ai-skills-that-actually-show-up-in-job-postings-right-now"
+   },
+   {
+    "title": "LinkedIn fastest-growing roles (Dice)",
+    "url": "https://www.dice.com/career-advice/ai-related-jobs-top-linkedins-fastest-growing-roles-list-for-2026"
+   },
+   {
+    "title": "AI engineer skill tree",
+    "url": "https://timroller.github.io/2026/04/08/ai-engineer-skill-tree.html"
+   },
+   {
+    "title": "JAGGAER Engineering Manager, Agentic and AI Systems",
+    "url": "https://incareers-jaggaer.icims.com/jobs/4008/engineering-manager-%e2%80%93-agentic-%26-ai-systems/job"
+   },
+   {
+    "title": "Questhiring Engineering Manager, AI",
+    "url": "https://jobs.weekday.works/wkdysd5zh9"
+   },
+   {
+    "title": "Lenovo Manager, AI Engineering",
+    "url": "https://wellfound.com/jobs/4524890-manager-ai-engineering"
+   },
+   {
+    "title": "EPAM Lead AI Engineer",
+    "url": "https://careers.epam.com/en/vacancy/lead-ai-engineer-agentic-and-rag-systems-blt0gwqdcd06g43wvh3_en"
+   },
+   {
+    "title": "Keywords Studios Lead AI Engineer",
+    "url": "https://apply.workable.com/keywords-intl1/jobs/view/91E59A0696.md"
+   },
+   {
+    "title": "LangChain 1.0 changelog",
+    "url": "https://changelog.langchain.com/announcements/ann_j9EkbzqXXeNod"
+   },
+   {
+    "title": "LangGraph v1 release notes",
+    "url": "https://docs.langchain.com/oss/python/releases/langgraph-v1"
+   },
+   {
+    "title": "What is LangSmith",
+    "url": "https://kb.langchain.com/articles/8854797554-what-is-langsmith"
+   },
+   {
+    "title": "Agent framework comparison (RaftLabs)",
+    "url": "https://www.raftlabs.com/blog/ai-agent-framework-comparison"
+   },
+   {
+    "title": "Agent interoperability: MCP and A2A (Lyzr)",
+    "url": "https://lyzr.ai/?p=133311"
+   },
+   {
+    "title": "RAG evaluation tools",
+    "url": "https://www.testmuai.com/blog/rag-evaluation-tools/"
+   },
+   {
+    "title": "Vector database comparison",
+    "url": "https://noqta.tn/blog/vector-database-comparison-2026-pgvector-pinecone-qdrant-weaviate"
+   },
+   {
+    "title": "Enterprise AI trends (StackAI)",
+    "url": "https://www.stack-ai.com/insights/top-10-enterprise-ai-trends-to-watch-in-2026"
+   },
+   {
+    "title": "OpenTelemetry for LLMs",
+    "url": "https://middleware.io/blog/opentelemetry-for-llms/"
+   },
+   {
+    "title": "LLM gateways comparison (Dupple)",
+    "url": "https://dupple.com/learn/best-llm-gateways"
+   },
+   {
+    "title": "vLLM at PyTorch Conference",
+    "url": "https://futurumgroup.com/insights/vllm-becomes-production-infrastructure-at-pytorch-conference-2026/"
+   },
+   {
+    "title": "EU AI Act general-purpose enforcement (CSA)",
+    "url": "https://labs.cloudsecurityalliance.org/research/csa-research-note-eu-ai-act-gpai-enforcement-20260509-csa-st/"
+   },
+   {
+    "title": "High-risk delay report",
+    "url": "https://www.safebreach.com/?p=161192"
+   }
+  ]
+ },
+ "res": [
+  [
+   {
+    "type": "V",
+    "title": "Intro to Large Language Models (Karpathy, 1 h)",
+    "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+    "why": "Best single overview: training, inference, security"
+   },
+   {
+    "type": "V",
+    "title": "Deep Dive into LLMs like ChatGPT (Karpathy, 3.5 h)",
+    "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+    "why": "Optional; the SFT and RLHF stages explained"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "Prompt engineering overview (Anthropic)",
+    "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+    "why": "Clear instructions, examples, XML tags, chaining"
+   },
+   {
+    "type": "D",
+    "title": "Tool use overview (Anthropic)",
+    "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview",
+    "why": "The function-calling loop and tool schemas"
+   }
+  ],
+  [
+   {
+    "type": "P",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "url": "https://arxiv.org/abs/2005.11401",
+    "why": "The original RAG paper; read the abstract and intro"
+   },
+   {
+    "type": "A",
+    "title": "Introducing Contextual Retrieval (Anthropic)",
+    "url": "https://anthropic.com/news/contextual-retrieval",
+    "why": "Hybrid BM25 plus embeddings plus reranking, with numbers"
+   },
+   {
+    "type": "A",
+    "title": "Building A Generative AI Platform (Chip Huyen)",
+    "url": "https://huyenchip.com/blog/",
+    "why": "Find the post on the blog index; covers RAG, gateway, guardrails, cache"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "pgvector README",
+    "url": "https://github.com/pgvector/pgvector",
+    "why": "HNSW vs IVFFlat, filtering, hybrid search with full-text"
+   },
+   {
+    "type": "A",
+    "title": "Vector database comparison 2026",
+    "url": "https://noqta.tn/blog/vector-database-comparison-2026-pgvector-pinecone-qdrant-weaviate",
+    "why": "When to pick which store"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "Building effective agents (Anthropic)",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents",
+    "why": "Workflows vs agents and the standard patterns; read first"
+   },
+   {
+    "type": "V",
+    "title": "How We Build Effective Agents (Barry Zhang, Anthropic, 15 min)",
+    "url": "https://ai.engineer/talks/effective-ai-agents",
+    "why": "Talk with synced transcript"
+   },
+   {
+    "type": "P",
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+    "url": "https://arxiv.org/abs/2210.03629",
+    "why": "The thought, action, observation loop behind most agents"
+   }
+  ],
+  [
+   {
+    "type": "C",
+    "title": "LangChain Academy: Introduction to LangGraph (free)",
+    "url": "https://academy.langchain.com/collections/5d8b36",
+    "why": "Official course, about 6 hours of video"
+   },
+   {
+    "type": "D",
+    "title": "LangGraph persistence",
+    "url": "https://docs.langchain.com/oss/python/langgraph/persistence",
+    "why": "Checkpointers, threads, time travel"
+   },
+   {
+    "type": "D",
+    "title": "LangChain 1.0 announcement",
+    "url": "https://changelog.langchain.com/announcements/ann_j9EkbzqXXeNod",
+    "why": "What changed: create_agent, middleware"
+   },
+   {
+    "type": "D",
+    "title": "LangSmith evaluation concepts",
+    "url": "https://docs.langchain.com/langsmith/evaluation-concepts",
+    "why": "Datasets, evaluators, experiments, online vs offline"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "MCP introduction",
+    "url": "https://modelcontextprotocol.io/introduction",
+    "why": "Official overview, the USB-C analogy"
+   },
+   {
+    "type": "D",
+    "title": "A2A protocol",
+    "url": "https://a2a-protocol.org",
+    "why": "Spec, SDKs and tutorials"
+   },
+   {
+    "type": "A",
+    "title": "A2A one year on (Linux Foundation)",
+    "url": "https://linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year",
+    "why": "How A2A and MCP are positioned together"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "Your AI Product Needs Evals (Hamel Husain)",
+    "url": "https://hamel.dev/blog/posts/evals/",
+    "why": "Three levels of evals; the practical starting point"
+   },
+   {
+    "type": "P",
+    "title": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+    "url": "https://arxiv.org/abs/2306.05685",
+    "why": "Judge biases: position, verbosity, self-preference"
+   },
+   {
+    "type": "D",
+    "title": "DeepEval getting started",
+    "url": "https://deepeval.com/docs/getting-started",
+    "why": "Pytest-style tests for LLM apps"
+   },
+   {
+    "type": "D",
+    "title": "Ragas metrics",
+    "url": "https://docs.ragas.io/en/latest/concepts/metrics/",
+    "why": "Faithfulness, answer relevancy, context precision and recall"
+   },
+   {
+    "type": "D",
+    "title": "LangSmith evaluation quickstart",
+    "url": "https://docs.langchain.com/langsmith/evaluation-quickstart",
+    "why": "Dataset to experiment in minutes"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "LiteLLM OpenTelemetry v2",
+    "url": "https://docs.litellm.ai/docs/observability/opentelemetry_v2",
+    "why": "One trace per request through the gateway"
+   },
+   {
+    "type": "D",
+    "title": "Langfuse with LiteLLM Proxy",
+    "url": "https://langfuse.com/docs/integrations/litellm",
+    "why": "Open-source tracing and cost tracking"
+   },
+   {
+    "type": "D",
+    "title": "OpenTelemetry GenAI semantic conventions",
+    "url": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+    "why": "Vendor-neutral span attributes for LLM calls"
+   },
+   {
+    "type": "D",
+    "title": "NVIDIA NeMo Guardrails docs",
+    "url": "https://docs.nvidia.com/nemo/guardrails/",
+    "why": "Input, output, dialog and tool rails; Presidio PII integration"
+   }
+  ],
+  [
+   {
+    "type": "P",
+    "title": "Efficient Memory Management for LLM Serving with PagedAttention (vLLM)",
+    "url": "https://arxiv.org/abs/2309.06180",
+    "why": "KV cache paging and why vLLM is fast"
+   },
+   {
+    "type": "D",
+    "title": "vLLM quickstart",
+    "url": "https://docs.vllm.ai/en/latest/getting_started/quickstart.html",
+    "why": "OpenAI-compatible server in one command"
+   },
+   {
+    "type": "A",
+    "title": "vLLM at PyTorch Conference (Futurum)",
+    "url": "https://futurumgroup.com/insights/vllm-becomes-production-infrastructure-at-pytorch-conference-2026/",
+    "why": "Where vLLM stands in production"
+   }
+  ],
+  [
+   {
+    "type": "P",
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "url": "https://arxiv.org/abs/2106.09685",
+    "why": "Freeze base weights, train small low-rank matrices"
+   },
+   {
+    "type": "D",
+    "title": "Hugging Face PEFT: LoRA",
+    "url": "https://huggingface.co/docs/peft/v0.20.0/package_reference/lora",
+    "why": "LoraConfig, rank, target modules, QLoRA-style training"
+   }
+  ],
+  [
+   {
+    "type": "D",
+    "title": "OWASP Top 10 for LLM Applications",
+    "url": "https://genai.owasp.org/llm-top-10/",
+    "why": "Prompt injection, excessive agency, output handling and more"
+   },
+   {
+    "type": "D",
+    "title": "NIST AI Risk Management Framework",
+    "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+    "why": "Govern, Map, Measure, Manage"
+   },
+   {
+    "type": "A",
+    "title": "EU AI Act general-purpose enforcement (CSA)",
+    "url": "https://labs.cloudsecurityalliance.org/research/csa-research-note-eu-ai-act-gpai-enforcement-20260509-csa-st/",
+    "why": "Duties and timeline; confirm before quoting"
+   }
+  ],
+  [
+   {
+    "type": "A",
+    "title": "A Field Guide to Rapidly Improving AI Products (Hamel Husain)",
+    "url": "https://hamel.dev/blog/posts/field-guide/",
+    "why": "Error analysis, metrics, and an experiment-driven roadmap"
+   },
+   {
+    "type": "A",
+    "title": "Chip Huyen's blog",
+    "url": "https://huyenchip.com/blog/",
+    "why": "Platform design, agents, common pitfalls"
+   }
+  ]
+ ],
+ "rtype": {
+  "V": [
+   "Video",
+   "video"
+  ],
+  "D": [
+   "Docs",
+   "docs"
+  ],
+  "P": [
+   "Paper",
+   "paper"
+  ],
+  "A": [
+   "Article",
+   "article"
+  ],
+  "C": [
+   "Course",
+   "course"
+  ]
+ }
+}

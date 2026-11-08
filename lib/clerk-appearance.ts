@@ -2,7 +2,7 @@
 // Variables are applied app-wide in the layout; `authAppearance` adds layout-level tweaks
 // for the sign-in and sign-up cards so they sit flat on the page.
 export const baseVariables = {
-  colorPrimary: "#4f46e5",
+  colorPrimary: "#0f766e",
   colorText: "#0f0f14",
   colorTextSecondary: "#5f6372",
   colorBackground: "#ffffff",
@@ -16,7 +16,7 @@ export const authAppearance = {
   variables: baseVariables,
   elements: {
     rootBox: { width: "100%" },
-    cardBox: { width: "100%", boxShadow: "0 30px 60px -36px rgba(55,48,163,.45)", border: "1px solid #e6e7ee", borderRadius: "18px" },
+    cardBox: { width: "100%", boxShadow: "0 30px 60px -36px rgba(15,118,110,.45)", border: "1px solid #e5e7e6", borderRadius: "18px" },
     card: { boxShadow: "none" },
     headerTitle: { letterSpacing: "-0.02em", fontWeight: 800 },
     formButtonPrimary: {
@@ -25,7 +25,7 @@ export const authAppearance = {
       transition: "transform .2s ease, background .2s ease",
       "&:hover": { transform: "translateY(-1px)" },
     },
-    socialButtonsBlockButton: { borderColor: "#e6e7ee", fontWeight: 600 },
+    socialButtonsBlockButton: { borderColor: "#e5e7e6", fontWeight: 600 },
     footerActionLink: { fontWeight: 600 },
   },
 };

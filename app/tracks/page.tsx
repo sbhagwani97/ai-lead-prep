@@ -1,10 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
-import AppNav from "@/app/AppNav";
 import { loadProfile } from "@/lib/progress";
 import { TRACKS } from "@/lib/tracks";
-import TrackPicker from "./TrackPicker";
+import TracksView from "./TracksView";
 
 export const dynamic = "force-dynamic";
 
@@ -13,20 +11,5 @@ export default async function TracksPage() {
   if (!userId) redirect("/sign-in");
 
   const profile = await loadProfile(userId);
-  const first = profile.tracks.length === 0;
-
-  return (
-    <div className="ap">
-      <AppNav right={<UserButton />} />
-      <main className="ap-main">
-        <h1>{first ? "Pick your track" : "Your tracks"}</h1>
-        <p>
-          {first
-            ? "Choose what you want to prepare for. You can follow more than one and switch any time."
-            : "Add or remove tracks. Removing one keeps your progress if you add it back later."}
-        </p>
-        <TrackPicker tracks={TRACKS} joined={profile.tracks} first={first} />
-      </main>
-    </div>
-  );
+  return <TracksView tracks={TRACKS} joined={profile.tracks} />;
 }
