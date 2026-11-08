@@ -3,18 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 const KEY = "preppy-greeted";
-const TYPE_MS = 48;
-const HOLD_MS = 900;
-const FADE_MS = 650;
+const START_MS = 500;
+const TYPE_MS = 55;
+const HOLD_MS = 2200; // how long the finished line stays on screen
+const FADE_MS = 700;
+const SKIP_GRACE_MS = 1000; // ignore skip input right after load (stray keys, held Enter)
 
-// Full-screen greeting that types itself out (first name in teal), holds for a moment,
-// then fades into the course page. Plays once per browser session, so switching tracks
-// does not replay it. Any click or key press skips it.
-export default function GreetingIntro({ text, name }: { text: string; name: string }) {
-  const reduce = useMediaQuery("(prefers-reduced-motion: reduce)");
+// Full-screen greeting that types itself out (first name in teal), holds, then fades into
+// the course page. It runs once on mount and ignores later prop changes, so a re-render
+// with a different random greeting cannot restart or cut it short. It plays once per
+// browser session; a click, Enter, Space or Escape (after a short grace period) skips it.
+export default function GreetingIntro({ text: textProp, name: nameProp }: { text: string; name: string }) {
+  const [{ text, name }] = useState({ text: textProp, name: nameProp });
   const [typed, setTyped] = useState(0);
   const [phase, setPhase] = useState<"typing" | "fading" | "gone">("typing");
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -27,10 +29,20 @@ export default function GreetingIntro({ text, name }: { text: string; name: stri
       return;
     }
 
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const born = Date.now();
+    let finished = false;
+
     const later = (fn: () => void, ms: number) => timers.current.push(setTimeout(fn, ms));
+    const clearAll = () => {
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+    };
     const finish = () => {
+      if (finished) return;
+      finished = true;
       // Marked as seen only once it has played, so a double effect run (React strict mode)
       // or an interrupted load does not swallow it.
       try { sessionStorage.setItem(KEY, "1"); } catch { /* ignore */ }
@@ -43,7 +55,7 @@ export default function GreetingIntro({ text, name }: { text: string; name: stri
 
     if (reduce) {
       setTyped(text.length);
-      later(finish, 1200);
+      later(finish, HOLD_MS + 600);
     } else {
       let i = 0;
       const tick = () => {
@@ -52,24 +64,30 @@ export default function GreetingIntro({ text, name }: { text: string; name: stri
         if (i < text.length) later(tick, TYPE_MS);
         else later(finish, HOLD_MS);
       };
-      later(tick, 450);
+      later(tick, START_MS);
     }
 
     const skip = () => {
-      timers.current.forEach(clearTimeout);
-      timers.current = [];
+      if (Date.now() - born < SKIP_GRACE_MS) return;
+      clearAll();
       setTyped(text.length);
       finish();
     };
-    window.addEventListener("keydown", skip, { once: true });
-    window.addEventListener("pointerdown", skip, { once: true });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+      if (e.key === "Enter" || e.key === " " || e.key === "Escape") skip();
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", skip);
     return () => {
-      timers.current.forEach(clearTimeout);
-      window.removeEventListener("keydown", skip);
+      clearAll();
+      window.removeEventListener("keydown", onKey);
       window.removeEventListener("pointerdown", skip);
       document.body.style.overflow = prevOverflow;
     };
-  }, [text, reduce]);
+    // Runs once on mount on purpose: text and name are frozen in state above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (phase === "gone") return null;
 
