@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Lead Interview Prep</title>
+<title>Interview Prep</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -150,6 +150,7 @@ details.card[open] { border-color: #c7d2fe; }
 button:hover { background: var(--indigo-soft); color: var(--indigo); border-color: #c7d2fe; }
 .sync { font-size: 12px; color: var(--muted-foreground, #71717a); min-width: 52px; }
 .acct { font-size: 13px; font-weight: 500; color: var(--primary, #4f46e5); text-decoration: none; padding: 4px 10px; border: 1px solid var(--border, #e4e4e7); border-radius: 6px; background: #fff; }
+.tsw { font: inherit; font-size: 13px; font-weight: 500; padding: 4px 8px; border: 1px solid var(--border, #e4e4e7); border-radius: 6px; background: #fff; color: var(--foreground, #09090b); cursor: pointer; max-width: 160px; }
 .acct:hover { background: var(--indigo-soft, #eef2ff); }
 @media (max-width: 640px) { .sync { display: none; } }
 </style>
@@ -157,8 +158,8 @@ button:hover { background: var(--indigo-soft); color: var(--indigo); border-colo
 </head>
 <body>
 <div class="top"><div class="top-in">
-  <div class="brand">AI Lead Interview Prep<span>6 weeks · 25 h per week</span></div>
-  <div class="prog"><span id="pcount">0 of 0 tasks</span><div class="bar"><i id="pbar"></i></div><span id="sync" class="sync" aria-live="polite"></span><a class="acct" href="/account">Account</a></div>
+  <div class="brand"><span id="brandName">AI Lead</span> prep<span>6 weeks · 25 h per week</span></div>
+  <div class="prog"><select id="trackSwitch" class="tsw" aria-label="Switch track"></select><span id="pcount">0 of 0 tasks</span><div class="bar"><i id="pbar"></i></div><span id="sync" class="sync" aria-live="polite"></span><a class="acct" href="/account">Account</a></div>
 </div></div>
 
 <div class="wrap">
@@ -214,7 +215,7 @@ button:hover { background: var(--indigo-soft); color: var(--indigo); border-colo
 
 <section class="topic" id="plan">
   <h2><span class="num">4</span>6-week plan</h2>
-  <p class="lead">Weekdays are 3 hours and weekends 5 hours. Suggested split: weekdays for reading and short labs, weekends for the build and review blocks. One small project ties the tools together so you can say "I built this". Select a week to jump to it. Ticks are saved in this browser.</p>
+  <p class="lead">Weekdays are 3 hours and weekends 5 hours. Suggested split: weekdays for reading and short labs, weekends for the build and review blocks. One small project ties the tools together so you can say "I built this". Select a week to jump to it. Ticks are saved to your account.</p>
   <div class="strip" id="strip"></div>
   <div class="scroll"><table>
     <thead><tr><th>Project slice</th><th>What you build (small)</th><th>Week</th></tr></thead>
@@ -470,7 +471,21 @@ var TOOLLINK = {
 };
 
 /* ---------- RENDER ---------- */
-var BOOT = window.__PREP__ || { ticks: [], name: "" };
+var BOOT = window.__PREP__ || { ticks: [], name: "", track: { id: "ai-lead", title: "AI Lead" }, tracks: [] };
+(function () {
+  var sw = document.getElementById("trackSwitch"), bn = document.getElementById("brandName");
+  if (bn) bn.textContent = BOOT.track.title;
+  if (!sw) return;
+  (BOOT.tracks || []).forEach(function (t) {
+    var o = document.createElement("option"); o.value = t.id; o.textContent = t.title;
+    if (t.id === BOOT.track.id) o.selected = true; sw.appendChild(o);
+  });
+  var m = document.createElement("option"); m.value = "__manage"; m.textContent = "Add or manage tracks...";
+  sw.appendChild(m);
+  sw.addEventListener("change", function () {
+    location.href = sw.value === "__manage" ? "/tracks" : "/prep/" + encodeURIComponent(sw.value);
+  });
+})();
 var ticks = {};
 (BOOT.ticks || []).forEach(function (id) { ticks[id] = 1; });
 var saveTimer = null, saving = false, dirty = false;
@@ -481,7 +496,7 @@ function flush() {
   fetch("/api/progress", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ ticks: Object.keys(ticks) }),
+    body: JSON.stringify({ track: BOOT.track.id, ticks: Object.keys(ticks) }),
     keepalive: true
   }).then(function (r) {
     if (r.status === 401) { location.href = "/sign-in"; return; }

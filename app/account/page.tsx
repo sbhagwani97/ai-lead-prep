@@ -14,6 +14,7 @@ export default async function Account() {
       <p>Your progress is saved to your account, so it follows you across devices.</p>
       <div className="row">
         <Link className="btn primary" href="/prep">Back to the plan</Link>
+        <Link className="btn" href="/tracks">Manage tracks</Link>
         <SignOutButton redirectUrl="/">
           <button className="btn">Sign out</button>
         </SignOutButton>

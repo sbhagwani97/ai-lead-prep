@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { cleanTicks, saveTicks } from "@/lib/progress";
+import { isTrackId } from "@/lib/tracks";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,11 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "bad json" }, { status: 400 });
   }
-  const ticks = cleanTicks((body as { ticks?: unknown })?.ticks);
-  await saveTicks(userId, ticks);
+  const { track, ticks: raw } = (body ?? {}) as { track?: unknown; ticks?: unknown };
+  if (!isTrackId(track)) return NextResponse.json({ error: "unknown track" }, { status: 400 });
+
+  const ticks = cleanTicks(raw);
+  const ok = await saveTicks(userId, track, ticks);
+  if (!ok) return NextResponse.json({ error: "not joined" }, { status: 403 });
   return NextResponse.json({ ok: true, count: ticks.length });
 }

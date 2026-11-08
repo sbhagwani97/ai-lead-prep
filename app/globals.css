@@ -42,3 +42,16 @@ body {
 .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
 .btn:hover { filter: brightness(0.96); }
 .foot { position: fixed; bottom: 14px; color: var(--muted); font-size: 12px; }
+
+/* track picker */
+.picker { display: flex; flex-direction: column; gap: 18px; align-items: center; width: 100%; max-width: 640px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; width: 100%; }
+.card { position: relative; display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 16px 16px 14px; border: 1px solid var(--border); border-radius: 10px; background: #fff; cursor: pointer; }
+.card:hover { border-color: #c7d2fe; }
+.card.on { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); background: #f5f6ff; }
+.card input { position: absolute; top: 14px; right: 14px; accent-color: var(--primary); width: 16px; height: 16px; }
+.card .ct { font-weight: 600; font-size: 16px; padding-right: 26px; }
+.card .cb { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+.card .cm { color: var(--muted); font-size: 12px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.err { color: #b91c1c; font-size: 14px; }

@@ -3,7 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Lead Interview Prep",
+  title: "Interview Prep",
   robots: { index: false, follow: false },
 };
 
