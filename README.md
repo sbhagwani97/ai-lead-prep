@@ -1,4 +1,4 @@
-# AI Lead Interview Prep (gated)
+# Preppy
 
 Next.js + Clerk, deployable on Vercel Hobby for free. Users sign up / log in, and each user's
 ticked tasks are saved to their own account (Clerk private metadata), so progress follows them across devices.

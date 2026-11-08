@@ -15,6 +15,7 @@ export default async function TracksPage() {
 
   return (
     <main className="center">
+      <div className="wordmark"><img src="/logo-mark.svg" alt="" width={22} height={22} />Preppy</div>
       <h1>{first ? "Pick your track" : "Your tracks"}</h1>
       <p>
         {first

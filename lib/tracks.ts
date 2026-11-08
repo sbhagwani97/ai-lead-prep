@@ -20,6 +20,13 @@ export const TRACKS: Track[] = [
     meta: "6 weeks · 150 hours",
     file: "ai-lead.html",
   },
+  {
+    id: "pm-ai",
+    title: "Product Manager - AI",
+    blurb: "AI product sense, evals, UX and trust, economics and strategy, with a 6-week plan and a PRD project.",
+    meta: "6 weeks · 150 hours",
+    file: "pm-ai.html",
+  },
 ];
 
 export const TRACK_IDS = TRACKS.map((t) => t.id);

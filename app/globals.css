@@ -55,3 +55,5 @@ body {
 .card .cm { color: var(--muted); font-size: 12px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .err { color: #b91c1c; font-size: 14px; }
+
+.wordmark { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; color: var(--primary); }

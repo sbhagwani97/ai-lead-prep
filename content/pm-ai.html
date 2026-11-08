@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preppy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* shadcn/ui look: zinc tokens, 0.5rem radius, Inter, tabs list, card, badge, accordion, outline buttons */
+:root {
+  --background: #fbfbff; --foreground: #09090b; --card: #ffffff; --muted: #f4f4f5; --muted-foreground: #71717a;
+  --border: #e4e4e7; --primary: #4f46e5; --primary-foreground: #ffffff; --secondary: #f4f4f5; --ring: #a1a1aa; --radius: 0.5rem;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 120px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-body); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: var(--foreground); text-decoration: underline; text-decoration-color: var(--ring); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--foreground); }
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.2; margin: 0; letter-spacing: -0.02em; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+
+.top { position: sticky; top: 0; z-index: 10; background: var(--background); border-bottom: 1px solid var(--border); }
+.top-in { max-width: 900px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.brand { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+.brand .logo { vertical-align: -5px; margin-right: 8px; }
+.brand span { font-weight: 400; color: var(--muted-foreground); font-size: 13px; margin-left: 10px; }
+.prog { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted-foreground); }
+.bar { width: 140px; height: 8px; background: color-mix(in srgb, var(--primary) 20%, transparent); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--primary); border-radius: 99px; transition: width .3s; }
+
+.wrap { max-width: 900px; margin: 0 auto; padding: 8px 16px 64px; }
+header.hero { margin: 28px 0 20px; }
+header.hero h1 { font-size: clamp(28px, 4vw, 38px); font-weight: 700; letter-spacing: -0.03em; }
+header.hero p { max-width: 64ch; color: var(--muted-foreground); margin: 12px 0 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chip { font-size: 12px; font-weight: 500; padding: 2px 10px; border: 1px solid var(--border); border-radius: 99px; background: var(--background); }
+
+/* Tabs */
+nav.index { position: sticky; top: 53px; z-index: 9; background: var(--background); padding: 10px 0; margin-bottom: 8px; overflow-x: auto; scrollbar-width: none; }
+nav.index ol { list-style: none; margin: 0; padding: 4px; display: inline-flex; gap: 2px; background: var(--muted); border-radius: calc(var(--radius) + 2px); }
+nav.index li > a { display: block; padding: 6px 14px; border-radius: var(--radius); text-decoration: none; color: var(--muted-foreground); white-space: nowrap; font-size: 14px; font-weight: 500; cursor: pointer; }
+nav.index li > a:hover { color: var(--foreground); }
+nav.index li > a.on { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 0 0 1px var(--border); }
+
+section.topic { display: none; margin-bottom: 36px; padding-top: 16px; }
+section.topic.active { display: block; }
+section.topic > h2 { font-size: 24px; font-weight: 600; display: flex; gap: 12px; align-items: center; }
+section.topic > h2 .num { font-size: 12px; font-weight: 500; color: var(--muted-foreground); border: 1px solid var(--border); padding: 1px 8px; border-radius: 6px; }
+section.topic > .lead { color: var(--muted-foreground); max-width: 68ch; margin: 8px 0 18px; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+button { font: inherit; font-size: 13px; font-weight: 500; height: 32px; padding: 0 12px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); border-radius: var(--radius); cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+button:hover { background: var(--muted); }
+
+.scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--card); margin-bottom: 16px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 600px; }
+th, td { text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: 12px; font-weight: 500; color: var(--muted-foreground); background: color-mix(in srgb, var(--muted) 50%, transparent); }
+tr:last-child td { border-bottom: 0; }
+td.tn { font-weight: 500; }
+.tier { font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 6px; white-space: nowrap; display: inline-block; border: 1px solid transparent; }
+.tier.t1 { background: #e4e4e7; color: #18181b; }
+.tier.t2 { background: var(--secondary); color: var(--foreground); }
+.tier.t3 { background: transparent; color: var(--foreground); border-color: var(--border); }
+
+details.card { background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+details.card > summary { cursor: pointer; padding: 14px 18px; font-weight: 500; list-style: none; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--muted-foreground); border-bottom: 2px solid var(--muted-foreground); transform: rotate(45deg); margin: -4px 4px 0 0; transition: transform .2s; flex: none; }
+details.card[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+details.card > summary .sub { font-weight: 400; color: var(--muted-foreground); font-size: 13px; display: block; margin-top: 2px; }
+details.card > .body { padding: 2px 18px 18px; border-top: 1px solid var(--border); }
+.sg { margin-top: 16px; }
+.sg h4, .res h4 { font-size: 13px; font-weight: 600; color: var(--foreground); margin-bottom: 6px; letter-spacing: 0; }
+.sg ul { margin: 0; padding-left: 18px; color: var(--foreground); }
+.sg li { margin: 4px 0; }
+.say-box { margin-top: 16px; padding: 12px 16px; background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; }
+.say-box b { font-size: 12px; font-weight: 600; color: var(--muted-foreground); display: block; margin-bottom: 2px; }
+
+.checks { list-style: none; padding: 0; margin: 0; }
+.checks li { margin: 4px 0; }
+.checks label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; padding: 3px 0; }
+.checks input { margin-top: 4px; accent-color: var(--primary); width: 16px; height: 16px; flex: none; }
+.checks input:checked + span { color: var(--muted-foreground); text-decoration: line-through; }
+.hrs { font-size: 11px; font-weight: 500; padding: 0 6px; margin-right: 8px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted-foreground); }
+.wkmeta { font-size: 14px; color: var(--muted-foreground); margin: 12px 0 0; }
+.wkmeta b { color: var(--foreground); font-weight: 600; }
+
+.strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.wk { display: block; background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); padding: 14px; text-decoration: none; color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.wk:hover { background: var(--muted); }
+.wk .n { font-size: 12px; font-weight: 500; color: var(--muted-foreground); }
+.wk .t { font-weight: 600; font-size: 14px; line-height: 1.35; margin-top: 4px; }
+.wk .pc { font-size: 12px; margin-top: 10px; color: var(--muted-foreground); }
+
+.res { margin-top: 16px; }
+.res ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.res li { display: flex; gap: 10px; align-items: baseline; }
+.rt { font-size: 11px; font-weight: 500; min-width: 56px; text-align: center; padding: 1px 6px; border-radius: 6px; background: var(--secondary); color: var(--foreground); flex: none; border: 1px solid transparent; }
+.rt.v { background: #e4e4e7; color: #18181b; }
+.rt.p { background: transparent; border-color: var(--border); }
+.res .why { color: var(--muted-foreground); font-size: 13px; }
+
+.note { font-size: 13px; color: var(--muted-foreground); margin-top: 12px; }
+.src { padding-left: 18px; margin: 0; font-size: 14px; }
+.src li { margin: 4px 0; }
+h3.grp { margin: 22px 0 8px; font-size: 14px; font-weight: 600; letter-spacing: 0; }
+.foot { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--muted-foreground); }
+
+@media (max-width: 760px) { .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .strip { grid-template-columns: minmax(0, 1fr); } .bar { width: 100px; } }
+
+/* colour accents */
+:root { --indigo: #4f46e5; --indigo-soft: #eef2ff; --amber: #b45309; --amber-soft: #fef3c7; --rose: #be123c; --rose-soft: #ffe4e6; --sky: #0369a1; --sky-soft: #e0f2fe; --violet: #6d28d9; --violet-soft: #ede9fe; --emerald: #047857; --emerald-soft: #d1fae5; }
+a { color: var(--indigo); text-decoration-color: color-mix(in srgb, var(--indigo) 40%, transparent); }
+a:hover { text-decoration-color: var(--indigo); }
+body { background: linear-gradient(180deg, #eef2ff 0, #fbfbff 280px) no-repeat, var(--background); }
+header.hero h1 { background: linear-gradient(90deg, #4f46e5, #0ea5e9); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.chip:nth-child(1) { background: var(--indigo-soft); border-color: transparent; color: var(--indigo); }
+.chip:nth-child(2) { background: var(--sky-soft); border-color: transparent; color: var(--sky); }
+.chip:nth-child(3) { background: var(--amber-soft); border-color: transparent; color: var(--amber); }
+.chip:nth-child(4) { background: var(--emerald-soft); border-color: transparent; color: var(--emerald); }
+nav.index ol { background: var(--indigo-soft); }
+nav.index li > a.on { color: var(--indigo); box-shadow: 0 1px 2px rgba(79,70,229,.15), 0 0 0 1px #c7d2fe; }
+section.topic > h2 .num { background: var(--indigo-soft); color: var(--indigo); border-color: transparent; font-weight: 600; }
+th { background: var(--indigo-soft); color: var(--indigo); }
+.tier.t1 { background: var(--indigo-soft); color: var(--indigo); }
+.tier.t2 { background: var(--amber-soft); color: var(--amber); }
+.tier.t3 { background: #f4f4f5; color: #52525b; border-color: transparent; }
+.sg h4, .res h4 { color: var(--indigo); }
+.say-box { background: var(--amber-soft); border-color: #fde68a; border-left: 4px solid #f59e0b; }
+.say-box b { color: var(--amber); }
+.rt.video { background: var(--rose-soft); color: var(--rose); }
+.rt.docs { background: var(--sky-soft); color: var(--sky); }
+.rt.paper { background: var(--violet-soft); color: var(--violet); }
+.rt.article { background: var(--emerald-soft); color: var(--emerald); }
+.rt.course { background: var(--amber-soft); color: var(--amber); }
+.hrs { background: var(--amber-soft); color: var(--amber); border-color: transparent; }
+.wk { border-top: 4px solid var(--indigo); }
+.wk:nth-child(2) { border-top-color: #0ea5e9; } .wk:nth-child(3) { border-top-color: #10b981; }
+.wk:nth-child(4) { border-top-color: #f59e0b; } .wk:nth-child(5) { border-top-color: #f43f5e; } .wk:nth-child(6) { border-top-color: #8b5cf6; }
+.wk .n { color: var(--indigo); font-weight: 600; }
+.bar { background: #e0e7ff; }
+.bar > i { background: linear-gradient(90deg, #4f46e5, #0ea5e9); }
+details.card[open] { border-color: #c7d2fe; }
+button:hover { background: var(--indigo-soft); color: var(--indigo); border-color: #c7d2fe; }
+.sync { font-size: 12px; color: var(--muted-foreground, #71717a); min-width: 52px; }
+.acct { font-size: 13px; font-weight: 500; color: var(--primary, #4f46e5); text-decoration: none; padding: 4px 10px; border: 1px solid var(--border, #e4e4e7); border-radius: 6px; background: #fff; }
+.tsw { font: inherit; font-size: 13px; font-weight: 500; padding: 4px 8px; border: 1px solid var(--border, #e4e4e7); border-radius: 6px; background: #fff; color: var(--foreground, #09090b); cursor: pointer; max-width: 210px; }
+.acct:hover { background: var(--indigo-soft, #eef2ff); }
+@media (max-width: 640px) { .sync { display: none; } }
+</style>
+<!--PREP_BOOT-->
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <div class="brand"><img class="logo" src="/logo-mark.svg" alt="" width="22" height="22">Preppy<span><b id="brandName" style="font-weight:600;color:var(--foreground)">Product Manager - AI</b> · 6 weeks · 25 h per week</span></div>
+  <div class="prog"><select id="trackSwitch" class="tsw" aria-label="Switch track"></select><span id="pcount">0 of 0 tasks</span><div class="bar"><i id="pbar"></i></div><span id="sync" class="sync" aria-live="polite"></span><a class="acct" href="/account">Account</a></div>
+</div></div>
+
+<div class="wrap">
+<nav class="index" aria-label="Sections">
+  <ol id="idx" role="tablist">
+    <li><a href="#jd">What JDs ask</a></li>
+    <li><a href="#concepts">Concepts</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#plan">6-week plan</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+</nav>
+
+<header class="hero">
+  <h1>AI product manager interviews: what the job asks for</h1>
+  <p>You do not need to train models, but you must reason about them. This track covers the AI concepts a product manager is probed on, how to frame, spec, evaluate and launch AI features, and a 6-week plan of 3 hours on weekdays and 5 on weekends.</p>
+  <div class="chips"><span class="chip">10 concepts</span><span class="chip">about 20 tools</span><span class="chip">1 product project</span><span class="chip">150 hours</span></div>
+</header>
+
+<section class="topic" id="jd">
+  <h2><span class="num">1</span>What AI PM job descriptions ask for</h2>
+  <p class="lead">This is a synthesis of requirements that recur in AI product manager postings, not a statistical count. Check it against the three or four postings you are actually targeting and adjust the weights.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Tier</th><th>Skill or topic</th><th>Where it shows up</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tier t1">Must know</span></td><td class="tn">AI product sense: when AI is the right solution, and which kind (rules, classic ML, LLM)</td><td>Case questions: "would you build this with AI?" and use-case prioritisation</td></tr>
+      <tr><td><span class="tier t1">Must know</span></td><td class="tn">LLM working knowledge: tokens, context, prompting, RAG, agents, tool use</td><td>Technical rounds with engineers; you must be credible, not hands-on deep</td></tr>
+      <tr><td><span class="tier t1">Must know</span></td><td class="tn">Evaluation: golden sets, quality metrics, error analysis, online experiments</td><td>"How do you know it works?" is the standard AI PM question</td></tr>
+      <tr><td><span class="tier t1">Must know</span></td><td class="tn">Writing specs for non-deterministic features: PRDs with eval criteria and failure handling</td><td>Product-sense and execution rounds</td></tr>
+      <tr><td><span class="tier t2">Expected at senior level</span></td><td class="tn">AI UX and trust: uncertainty, citations, fallbacks, feedback loops, latency</td><td>Design-partner and product-design rounds</td></tr>
+      <tr><td><span class="tier t2">Expected at senior level</span></td><td class="tn">Economics: cost per request, latency, model choice, build vs buy, pricing</td><td>Strategy rounds and cross-functional trade-offs</td></tr>
+      <tr><td><span class="tier t2">Expected at senior level</span></td><td class="tn">Safety, privacy, governance: prompt injection, PII, regulation, red teaming</td><td>Working with legal, security and trust teams</td></tr>
+      <tr><td><span class="tier t2">Expected at senior level</span></td><td class="tn">Strategy and leadership: moats, roadmaps under uncertainty, stakeholder communication</td><td>Group and lead PM roles</td></tr>
+      <tr><td><span class="tier t3">Know the name</span></td><td class="tn">Fine-tuning, MCP, vector databases, model routing, distillation</td><td>Occasional; one-line explanations are enough</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Written from general knowledge of the role, not from a fresh scrape of postings. Treat the tiers as a starting point.</p>
+</section>
+
+<section class="topic" id="concepts">
+  <h2><span class="num">2</span>Concepts at interview depth</h2>
+  <p class="lead">Each card has the few points interviewers probe and a line you can say out loud. Skip anything not here.</p>
+  <div class="tools"><button type="button" data-expand="concept-list">Expand all</button><button type="button" data-collapse="concept-list">Collapse all</button></div>
+  <div id="concept-list"></div>
+</section>
+
+<section class="topic" id="tools">
+  <h2><span class="num">3</span>Tools: one line each</h2>
+  <p class="lead">Know what each is for and when you would pick it. <span class="tier t1">Use</span> means do it hands-on in the plan; <span class="tier t3">Know</span> means a one-line explanation is enough.</p>
+  <div id="tool-tables"></div>
+</section>
+
+<section class="topic" id="plan">
+  <h2><span class="num">4</span>6-week plan</h2>
+  <p class="lead">Weekdays are 3 hours and weekends 5 hours. Weekdays are for reading and short exercises, weekends for the project and mock interviews. One project ties the track together so you can say "I shipped this spec". Select a week to jump to it. Ticks are saved to your account.</p>
+  <div class="strip" id="strip"></div>
+  <div class="scroll"><table>
+    <thead><tr><th>Project slice</th><th>What you produce</th><th>Week</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Problem and PRD</td><td>One AI feature for a support or knowledge assistant: problem brief, success metrics, PRD with eval criteria</td><td>1 and 6</td></tr>
+      <tr><td class="tn">Prototype</td><td>Working prompt and a grounded answer flow over a small document set, in a chat tool or no-code builder</td><td>1 to 2</td></tr>
+      <tr><td class="tn">Quality</td><td>30-case golden set, a scoring rubric, a run in promptfoo or LangSmith, and an error-analysis table</td><td>3</td></tr>
+      <tr><td class="tn">Trust and safety</td><td>Failure-state designs, a 10-prompt red-team log, a risk and mitigation list</td><td>4</td></tr>
+      <tr><td class="tn">Economics and launch</td><td>Cost-per-request sheet, build vs buy note, rollout plan with guardrail metrics</td><td>5 to 6</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tools"><button type="button" data-expand="weekly-list">Expand all weeks</button><button type="button" data-collapse="weekly-list">Collapse all weeks</button><button type="button" id="reset">Clear ticks</button></div>
+  <div id="weekly-list"></div>
+  <p class="note">Short on time: skip the fine-tuning and MCP notes and one case drill. Keep the project and the mock interviews. Each week is 5 weekdays at 3 h plus a weekend of 10 h, shown as 7 tasks.</p>
+</section>
+
+<section class="topic" id="sources">
+  <h2><span class="num">5</span>Sources</h2>
+  <p class="lead">Links were chosen from well-known, stable sources and were not opened one by one while building this track, so tell me if any is dead. Blogs and talks reflect their authors\' views.</p>
+  <ul class="src" id="src-list"></ul>
+</section>
+<footer class="foot">Made with &lt;3 by Shivam and Claude</footer>
+</div>
+
+<script>
+var CONCEPTS = [
+ {t:`How LLMs behave, for a PM`, s:`Enough to be credible with engineers`,
+  subs:[
+   {h:`Know`, l:[`Models read and write tokens. Cost and latency scale with tokens in and out, and the context window caps what the model sees at once.`,`Output is probabilistic: the same input can give different answers, so you specify behaviour with examples and tests, not exact rules.`,`Hallucination is confident wrong output. You reduce it with grounding, constraints and checks; you never remove it entirely.`,`Quality, cost and latency trade against each other. Bigger models are usually better, slower and pricier.`]}],
+  say:`I think of an LLM feature as a probabilistic component: I specify it with examples, measure it with an eval set, and design the product around its failure modes.`},
+ {t:`Is AI the right solution?`, s:`The first question in most AI PM cases`,
+  subs:[
+   {h:`Framing`, l:[`Start from the user problem and the cost of a wrong answer, not from the model.`,`Compare options: a rule or a template, classic ML (prediction, ranking), or an LLM (language, unstructured input, open-ended output).`,`Good AI fits: tolerant of occasional errors, high volume, value from speed or personalisation, a human can review. Poor fits: zero-error tasks with no review.`,`Prioritise by impact, feasibility (data, accuracy needed, latency) and risk.`]}],
+  say:`I ask what a wrong answer costs and who catches it. If the cost is low or a human reviews, AI is a candidate; otherwise I start with a simpler solution.`},
+ {t:`Prompting, structured output and tool use`, s:`What you must be able to spec`,
+  subs:[
+   {h:`Know`, l:[`A prompt is part of the product: system instructions, examples and constraints, versioned and tested like code.`,`Structured output (a JSON schema) lets downstream code rely on the answer. Tool or function calling lets the model request an action your code performs.`,`As PM you write the behaviour spec: tone, what to refuse, what to cite, how to handle missing information. Engineers turn it into prompts.`]}],
+  say:`I write behaviour specs with good and bad examples, and I expect every prompt change to be tested against the same eval set.`},
+ {t:`RAG and grounding`, s:`How products use company knowledge`,
+  subs:[
+   {h:`Know`, l:[`Retrieval-augmented generation fetches relevant passages and gives them to the model so answers come from your content, with citations.`,`Use RAG when knowledge changes often or must be traceable; fine-tuning is for style or format, not for facts.`,`Failure modes: the right document is never retrieved, stale content, ignoring the retrieved text, and leaking content a user should not see.`,`Product levers: which sources are in scope, freshness, permissions, and what the product does when nothing relevant is found.`]}],
+  say:`Grounding is a product decision as much as a technical one: which sources, who can see what, and what we say when we do not know.`},
+ {t:`Agents and workflows`, s:`How much autonomy to give`,
+  subs:[
+   {h:`Know`, l:[`A workflow follows fixed steps with model calls. An agent lets the model choose steps and tools. Prefer a workflow unless the path really varies.`,`Autonomy is a dial: suggest, draft, act with approval, act alone. Raise it only as measured reliability and reversibility allow.`,`Risks compound across steps. Add approvals for irreversible actions, spending caps and clear logs of what the agent did.`]}],
+  say:`I start with the lowest autonomy that still delivers value and earn higher autonomy with evidence and reversible actions.`},
+ {t:`Evaluation and quality metrics`, s:`The standard AI PM question: how do you know it works?`,
+  subs:[
+   {h:`Offline`, l:[`A golden set of real and tricky cases with expected behaviour, scored by a rubric, by humans, or by an LLM judge that you spot-check against human labels.`,`Error analysis: read failures, group them, and fix the biggest group first. This guides the roadmap better than a single score.`]},
+   {h:`Online`, l:[`Task success, edit or accept rate, escalation to a human, thumbs up and down, retention, and guardrail metrics such as complaints or unsafe outputs.`,`A/B tests work, but sample quality by reading conversations too. Averages hide bad tails.`]}],
+  say:`Nothing ships without a golden set and a pass bar written in the PRD, and every production failure becomes a new test case.`},
+ {t:`AI UX and trust`, s:`Design for uncertainty`,
+  subs:[
+   {h:`Know`, l:[`Set expectations: say what the feature can and cannot do, and show confidence or sources where it helps.`,`Make correction cheap: edit, regenerate, undo, and give feedback in one click. Feedback is also your data.`,`Handle failure on purpose: "I am not sure", a fallback to search or a human, and no dead ends.`,`Latency is UX: stream partial answers, show progress, and cap long waits.`]}],
+  say:`Trust is earned with sources, easy correction and honest failure states, and I design those before polishing the happy path.`},
+ {t:`Economics: cost, latency and build vs buy`, s:`The numbers behind the roadmap`,
+  subs:[
+   {h:`Know`, l:[`Cost per request is roughly tokens in and out times price, plus retrieval and tooling. Multiply by usage and compare with revenue per user.`,`Levers: a smaller model for easy cases, caching, shorter prompts, and routing hard cases to a stronger model.`,`Build vs buy: use a vendor model or API to learn fast; build or fine-tune only for a clear gap in quality, cost, control or data residency.`,`Pricing options: bundled, usage-based or a premium tier. Watch heavy users who cost more than they pay.`]}],
+  say:`I model unit economics early, route by difficulty to keep cost down, and revisit build vs buy when volume or quality needs change.`},
+ {t:`Safety, privacy and governance`, s:`Where legal and security get involved`,
+  subs:[
+   {h:`Know`, l:[`Prompt injection: untrusted text can steer the model. Treat model output and tool actions as untrusted and limit permissions.`,`Privacy: know what data goes to which vendor, retention terms, and how personal data is handled and consented.`,`Regulation and policy: the EU AI Act and frameworks like the NIST AI RMF classify risk; high-risk uses need documentation and oversight. Confirm current rules with legal.`,`Red teaming: attack your own feature before launch and log what you fixed.`]}],
+  say:`I involve legal and security at spec time, classify the feature by risk, and treat red-team findings as launch blockers.`},
+ {t:`AI product strategy and leadership`, s:`What senior and group PM roles probe`,
+  subs:[
+   {h:`Be ready to describe`, l:[`Moats: proprietary data, distribution, deep workflow integration, and trust. Raw model access is not a moat because competitors can buy it.`,`Roadmaps under uncertainty: run small experiments, set quality gates, and plan for model upgrades that change what is possible.`,`Working with engineers, data scientists, designers and legal: shared eval sets, a clear owner for quality, and honest communication about limits.`,`Launch: staged rollout, guardrail metrics, a feedback loop, and a plan to roll back.`]}],
+  say:`I own the outcome and the quality bar: I define success, make the trade-offs between quality, cost and risk visible, and stage launches so we learn safely.`}
+];
+
+var TOOLS = [
+ [`Prototyping and prompting`, [
+  [`Claude and ChatGPT`,`Fast prototypes of prompts and flows with real examples`,`t1`,`Use`],
+  [`Anthropic Console workbench`,`Test prompts, system messages and structured output side by side`,`t1`,`Use`],
+  [`v0, Lovable, Bolt`,`Generate clickable UI prototypes from a description`,`t3`,`Know`],
+  [`n8n, Zapier, Dify`,`No-code workflow builders that call models and tools`,`t3`,`Know`]]],
+ [`Evaluation and observability`, [
+  [`promptfoo`,`Run a test set against prompts and models and compare results`,`t1`,`Use`],
+  [`LangSmith`,`Tracing, datasets and experiments`,`t3`,`Know`],
+  [`Langfuse`,`Open-source tracing, cost tracking and prompt management`,`t3`,`Know`],
+  [`Braintrust`,`Evals and experiment tracking for AI products`,`t3`,`Know`],
+  [`Arize Phoenix`,`Open-source tracing and evaluation`,`t3`,`Know`]]],
+ [`Product analytics and data`, [
+  [`SQL and a spreadsheet`,`Slice usage and cost data yourself`,`t1`,`Use`],
+  [`PostHog, Amplitude, Mixpanel`,`Funnels, retention and experiments`,`t3`,`Know`]]],
+ [`Concepts to name`, [
+  [`MCP`,`Standard way for models to connect to tools and data`,`t3`,`Know`],
+  [`Vector databases`,`Store embeddings for retrieval`,`t3`,`Know`],
+  [`Fine-tuning`,`Adjust a model for style, format or cost on a narrow task`,`t3`,`Know`],
+  [`Model routing`,`Send easy requests to cheaper models and hard ones to stronger models`,`t3`,`Know`]]]
+];
+
+var WEEKS = [
+ {n:1, t:`Foundations, prompting and use-case framing`, o:`Problem brief and a working prompt prototype`,
+  tasks:[
+   `3|Read concepts 2.1 and 2.2; watch the Karpathy intro video`,
+   `3|Read concept 2.3; try structured output in a chat tool`,
+   `3|Pick the project feature (support or knowledge assistant) and list user problems`,
+   `3|Write the problem brief: user, pain, success metric, cost of a wrong answer`,
+   `3|Compare rule, classic ML and LLM for the feature in a short table`,
+   `6|Build the prompt prototype with 10 real example questions`,
+   `4|Review the prototype failures; note what the PRD must cover`]},
+ {n:2, t:`RAG, agents and capabilities`, o:`Grounded prototype and an autonomy decision`,
+  tasks:[
+   `3|Read concept 2.4; read the RAG paper abstract and intro`,
+   `3|Collect 8 to 10 documents and decide which sources are in scope`,
+   `3|Read concept 2.5 and the Anthropic agents article`,
+   `3|Decide the autonomy level for your feature and what needs approval`,
+   `3|Write what the product does when nothing relevant is found`,
+   `6|Prototype grounded answers with citations over your documents`,
+   `4|Test 15 questions; log wrong, missing and ungrounded answers`]},
+ {n:3, t:`Evaluation and quality`, o:`Golden set, rubric and an error-analysis table`,
+  tasks:[
+   `3|Read concept 2.6 and the Hamel Husain evals article`,
+   `3|Write a scoring rubric: correct, grounded, safe, tone`,
+   `3|Draft 15 golden cases covering normal and tricky inputs`,
+   `3|Extend to 30 cases including refusals and out-of-scope questions`,
+   `3|Set up promptfoo or LangSmith and run the set`,
+   `6|Do error analysis: group failures and rank them by impact`,
+   `4|Write the pass bar and online metrics for the PRD`]},
+ {n:4, t:`AI UX, trust and safety`, o:`Failure-state designs and a red-team log`,
+  tasks:[
+   `3|Read concept 2.7 and the Google PAIR guidebook sections on trust and errors`,
+   `3|Sketch the happy path with sources, feedback and correction`,
+   `3|Design three failure states: unsure, wrong, unavailable`,
+   `3|Read concept 2.9 and the OWASP LLM Top 10 list`,
+   `3|List data flows, vendors and personal data in your feature`,
+   `6|Red-team your prototype with 10 attacks; log fixes`,
+   `4|Write the risk and mitigation list and name who signs off`]},
+ {n:5, t:`Economics and strategy`, o:`Unit-economics sheet and a strategy note`,
+  tasks:[
+   `3|Read concept 2.8; list cost components for one request`,
+   `3|Build the cost-per-request sheet with three usage scenarios`,
+   `3|Write a build vs buy note with a trigger for revisiting it`,
+   `3|Read concept 2.10; write a one-paragraph moat statement`,
+   `3|Draft a 3-quarter roadmap with quality gates between steps`,
+   `6|Price the feature: options, margin, and heavy-user risk`,
+   `4|Present the economics and strategy aloud in 10 minutes`]},
+ {n:6, t:`PRD, launch and interview practice`, o:`Finished PRD, rollout plan and mock interviews done`,
+  tasks:[
+   `3|Write the PRD: problem, users, behaviour spec, eval criteria, failure handling`,
+   `3|Write the rollout plan: stages, guardrail metrics, rollback`,
+   `3|Prepare 5 stories on AI trade-offs, a failure, and a launch`,
+   `3|Drill 3 AI product-sense cases out loud`,
+   `3|Drill 2 AI strategy and metrics cases out loud`,
+   `6|Two full mock interviews with a peer; collect feedback`,
+   `4|Revise answers and re-read the weak concepts`]}
+];
+
+var SOURCES = [
+ [`Google People + AI Guidebook`,`https://pair.withgoogle.com/guidebook/`],
+ [`Building effective agents (Anthropic)`,`https://www.anthropic.com/engineering/building-effective-agents`],
+ [`Your AI Product Needs Evals (Hamel Husain)`,`https://hamel.dev/blog/posts/evals/`],
+ [`A Field Guide to Rapidly Improving AI Products (Hamel Husain)`,`https://hamel.dev/blog/posts/field-guide/`],
+ [`Intro to Large Language Models (Karpathy)`,`https://www.youtube.com/watch?v=zjkBMFhNj_g`],
+ [`OWASP Top 10 for LLM Applications`,`https://genai.owasp.org/llm-top-10/`],
+ [`NIST AI Risk Management Framework`,`https://www.nist.gov/itl/ai-risk-management-framework`],
+ [`Silicon Valley Product Group`,`https://www.svpg.com/`],
+ [`Lenny's Newsletter`,`https://www.lennysnewsletter.com/`],
+ [`Chip Huyen's blog`,`https://huyenchip.com/blog/`],
+ [`Prompt Engineering Guide`,`https://www.promptingguide.ai/`]
+];
+
+var RES = [
+ [[`V`,`Intro to Large Language Models (Karpathy, 1 h)`,`https://www.youtube.com/watch?v=zjkBMFhNj_g`,`Best single overview for non-engineers`]],
+ [[`D`,`Google People + AI Guidebook`,`https://pair.withgoogle.com/guidebook/`,`Chapters on when to use AI and what users need`],
+  [`A`,`Silicon Valley Product Group`,`https://www.svpg.com/`,`General product discovery thinking that carries over to AI`]],
+ [[`D`,`Prompt engineering overview (Anthropic)`,`https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview`,`Clear instructions, examples, structure`],
+  [`D`,`Tool use overview (Anthropic)`,`https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview`,`How the function-calling loop works`],
+  [`D`,`Prompt Engineering Guide`,`https://www.promptingguide.ai/`,`Techniques with examples`]],
+ [[`P`,`Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks`,`https://arxiv.org/abs/2005.11401`,`The original RAG paper; abstract and intro are enough`],
+  [`A`,`Introducing Contextual Retrieval (Anthropic)`,`https://anthropic.com/news/contextual-retrieval`,`Why retrieval quality matters, with numbers`]],
+ [[`A`,`Building effective agents (Anthropic)`,`https://www.anthropic.com/engineering/building-effective-agents`,`Workflows vs agents; read this first`],
+  [`D`,`MCP introduction`,`https://modelcontextprotocol.io/introduction`,`What MCP is, at overview level`]],
+ [[`A`,`Your AI Product Needs Evals (Hamel Husain)`,`https://hamel.dev/blog/posts/evals/`,`Practical start for evals`],
+  [`A`,`A Field Guide to Rapidly Improving AI Products (Hamel Husain)`,`https://hamel.dev/blog/posts/field-guide/`,`Error analysis and metrics`],
+  [`D`,`promptfoo introduction`,`https://www.promptfoo.dev/docs/intro/`,`Run test sets against prompts and models`]],
+ [[`D`,`Google People + AI Guidebook`,`https://pair.withgoogle.com/guidebook/`,`Explainability, trust, errors and feedback patterns`]],
+ [[`A`,`Chip Huyen's blog`,`https://huyenchip.com/blog/`,`Platform and cost trade-offs in AI products`],
+  [`A`,`Lenny's Newsletter`,`https://www.lennysnewsletter.com/`,`Search for AI product and pricing posts`]],
+ [[`D`,`OWASP Top 10 for LLM Applications`,`https://genai.owasp.org/llm-top-10/`,`Prompt injection, excessive agency, output handling`],
+  [`D`,`NIST AI Risk Management Framework`,`https://www.nist.gov/itl/ai-risk-management-framework`,`Govern, Map, Measure, Manage`]],
+ [[`A`,`Silicon Valley Product Group`,`https://www.svpg.com/`,`Product strategy and leadership essays`],
+  [`A`,`Lenny's Newsletter`,`https://www.lennysnewsletter.com/`,`Search for roadmap and AI strategy posts`]]
+];
+var RTYPE = {V:['Video','video'], D:['Docs','docs'], P:['Paper','paper'], A:['Article','article'], C:['Course','course']};
+var TOOLLINK = {
+ 'Anthropic Console workbench':'https://console.anthropic.com/',
+ 'promptfoo':'https://www.promptfoo.dev/docs/intro/',
+ 'LangSmith':'https://docs.langchain.com/langsmith/evaluation-concepts',
+ 'Langfuse':'https://langfuse.com/docs',
+ 'Braintrust':'https://www.braintrust.dev/docs',
+ 'Arize Phoenix':'https://docs.arize.com/phoenix',
+ 'n8n, Zapier, Dify':'https://docs.n8n.io/',
+ 'PostHog, Amplitude, Mixpanel':'https://posthog.com/docs',
+ 'MCP':'https://modelcontextprotocol.io/introduction'
+};
+
+/* ---------- RENDER ---------- */
+var BOOT = window.__PREP__ || { ticks: [], name: "", track: { id: "pm-ai", title: "Product Manager - AI" }, tracks: [] };
+(function () {
+  var sw = document.getElementById("trackSwitch"), bn = document.getElementById("brandName");
+  if (bn) bn.textContent = BOOT.track.title;
+  if (!sw) return;
+  (BOOT.tracks || []).forEach(function (t) {
+    var o = document.createElement("option"); o.value = t.id; o.textContent = t.title;
+    if (t.id === BOOT.track.id) o.selected = true; sw.appendChild(o);
+  });
+  var m = document.createElement("option"); m.value = "__manage"; m.textContent = "Add or manage tracks...";
+  sw.appendChild(m);
+  sw.addEventListener("change", function () {
+    location.href = sw.value === "__manage" ? "/tracks" : "/prep/" + encodeURIComponent(sw.value);
+  });
+})();
+var ticks = {};
+(BOOT.ticks || []).forEach(function (id) { ticks[id] = 1; });
+var saveTimer = null, saving = false, dirty = false;
+function setStatus(t) { var n = document.getElementById("sync"); if (n) n.textContent = t; }
+function flush() {
+  if (saving) { dirty = true; return; }
+  saving = true; dirty = false; setStatus("Saving...");
+  fetch("/api/progress", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ track: BOOT.track.id, ticks: Object.keys(ticks) }),
+    keepalive: true
+  }).then(function (r) {
+    if (r.status === 401) { location.href = "/sign-in"; return; }
+    setStatus(r.ok ? "Saved" : "Not saved. Retrying on next tick");
+  }).catch(function () { setStatus("Offline. Retrying on next tick"); })
+    .then(function () { saving = false; if (dirty) flush(); });
+}
+function save() { setStatus("Saving..."); clearTimeout(saveTimer); saveTimer = setTimeout(flush, 500); }
+function el(h) { var d = document.createElement("div"); d.innerHTML = h; return d.firstElementChild; }
+
+var box = document.getElementById("concept-list");
+CONCEPTS.forEach(function (x, k) {
+  var n = "2." + (k + 1);
+  var body = x.subs.map(function (s, si) {
+    return '<div class="sg"><h4>' + n + "." + (si + 1) + " " + s.h + "</h4><ul>" + s.l.map(function (i) { return "<li>" + i + "</li>"; }).join("") + "</ul></div>";
+  }).join("");
+  body += '<div class="say-box"><b>Say in an interview</b>' + x.say + "</div>";
+  var rs = RES[k] || [];
+  if (rs.length) {
+    body += '<div class="res"><h4>' + n + "." + (x.subs.length + 1) + " Study material</h4><ul>" + rs.map(function (r) {
+      var t = RTYPE[r[0]];
+      return '<li><span class="rt ' + t[1] + '">' + t[0] + '</span><span><a href="' + r[2] + '" target="_blank" rel="noopener">' + r[1] + '</a> <span class="why">- ' + r[3] + "</span></span></li>";
+    }).join("") + "</ul></div>";
+  }
+  box.appendChild(el('<details class="card" id="c' + (k + 1) + '"' + (k === 0 ? " open" : "") + "><summary><span>" + n + " " + x.t + '<span class="sub">' + x.s + '</span></span></summary><div class="body">' + body + "</div></details>"));
+});
+
+var tt = document.getElementById("tool-tables");
+TOOLS.forEach(function (g, gi) {
+  var rows = g[1].map(function (r) {
+    var tl = TOOLLINK[r[0]];
+    var nm = tl ? '<a href="' + tl + '" target="_blank" rel="noopener">' + r[0] + "</a>" : r[0];
+    return '<tr><td class="tn">' + nm + "</td><td>" + r[1] + '</td><td><span class="tier ' + r[2] + '">' + r[3] + "</span></td></tr>";
+  }).join("");
+  tt.appendChild(el('<div><h3 class="grp">3.' + (gi + 1) + " " + g[0] + '</h3><div class="scroll"><table><thead><tr><th>Tool</th><th>What it is for</th><th>Depth</th></tr></thead><tbody>' + rows + "</tbody></table></div></div>"));
+});
+
+var strip = document.getElementById("strip"), wl = document.getElementById("weekly-list");
+var allIds = [];
+function fmt(h) { return (h % 1 === 0 ? h : h.toFixed(1)) + "h"; }
+WEEKS.forEach(function (w) {
+  var ids = [], total = 0;
+  var items = w.tasks.map(function (t, ti) {
+    var p = t.split("|"), h = parseFloat(p[0]); total += h;
+    var id = "w" + w.n + "t" + ti; ids.push(id); allIds.push(id);
+    return '<li><label><input type="checkbox" data-id="' + id + '"' + (ticks[id] ? " checked" : "") + '><span><span class="hrs">' + fmt(h) + "</span>" + p[1] + "</span></label></li>";
+  }).join("");
+  w.ids = ids;
+  wl.appendChild(el('<details class="card" id="week' + w.n + '"' + (w.n === 1 ? " open" : "") + '><summary><span>4.' + w.n + " Week " + w.n + ": " + w.t + '<span class="sub" id="wp' + w.n + '"></span></span></summary><div class="body"><p class="wkmeta"><b>Hours:</b> ' + fmt(total) + " &nbsp; <b>Deliverable:</b> " + w.o + '</p><div class="sg"><ul class="checks">' + items + "</ul></div></div></details>"));
+  strip.appendChild(el('<a class="wk" href="#week' + w.n + '" data-open="week' + w.n + '"><div class="n">Week ' + w.n + '</div><div class="t">' + w.t + '</div><div class="pc" id="sp' + w.n + '"></div></a>'));
+});
+
+var sl = document.getElementById("src-list");
+SOURCES.forEach(function (s) { sl.appendChild(el('<li><a href="' + s[1] + '">' + s[0] + "</a></li>")); });
+
+function refresh() {
+  var done = allIds.filter(function (i) { return ticks[i]; }).length;
+  document.getElementById("pcount").textContent = done + " of " + allIds.length + " tasks";
+  document.getElementById("pbar").style.width = (allIds.length ? (100 * done / allIds.length) : 0) + "%";
+  WEEKS.forEach(function (w) {
+    var d = w.ids.filter(function (i) { return ticks[i]; }).length;
+    var txt = d + " of " + w.ids.length + " done";
+    document.getElementById("wp" + w.n).textContent = txt;
+    document.getElementById("sp" + w.n).textContent = txt;
+  });
+}
+document.addEventListener("change", function (e) {
+  var t = e.target;
+  if (t && t.matches('input[type="checkbox"][data-id]')) {
+    if (t.checked) ticks[t.dataset.id] = 1; else delete ticks[t.dataset.id];
+    save(); refresh();
+  }
+});
+document.getElementById("reset").addEventListener("click", function () {
+  ticks = {}; save();
+  document.querySelectorAll("input[data-id]").forEach(function (c) { c.checked = false; });
+  refresh();
+});
+refresh();
+
+document.addEventListener("click", function (e) {
+  var b = e.target.closest("button[data-expand],button[data-collapse]");
+  if (b) {
+    var open = b.hasAttribute("data-expand");
+    var bx = document.getElementById(b.getAttribute(open ? "data-expand" : "data-collapse"));
+    bx.querySelectorAll("details").forEach(function (d) { d.open = open; });
+    return;
+  }
+  var a = e.target.closest("a[data-open]");
+  if (a) { var d = document.getElementById(a.getAttribute("data-open")); if (d) d.open = true; }
+});
+if (location.hash) {
+  var h = document.getElementById(location.hash.slice(1));
+  if (h && h.tagName === "DETAILS") h.open = true;
+}
+
+var ids = ["jd", "concepts", "tools", "plan", "sources"];
+var tabLinks = document.querySelectorAll("#idx > li > a");
+function showTab(id, push) {
+  if (ids.indexOf(id) < 0) id = ids[0];
+  ids.forEach(function (x, i) {
+    document.getElementById(x).classList.toggle("active", x === id);
+    tabLinks[i].classList.toggle("on", x === id);
+    tabLinks[i].setAttribute("aria-selected", x === id ? "true" : "false");
+  });
+  if (push) { try { history.replaceState(null, "", "#" + id); } catch (e) {} }
+  window.scrollTo(0, 0);
+}
+tabLinks.forEach(function (l, i) {
+  l.setAttribute("role", "tab");
+  l.setAttribute("href", "#" + ids[i]);
+  l.addEventListener("click", function (e) { e.preventDefault(); showTab(ids[i], true); });
+});
+showTab(location.hash ? location.hash.slice(1) : ids[0], false);
+</script>
+</body>
+</html>
