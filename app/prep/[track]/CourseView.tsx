@@ -25,6 +25,7 @@ import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type { TrackContent } from "@/lib/track-content";
+import GreetingIntro from "./GreetingIntro";
 
 // A quiet reading layout: one accent colour, hairline dividers instead of cards,
 // plain type, and a section list on the left.
@@ -70,12 +71,14 @@ function Dot({ t }: { t: string }) {
 export default function CourseView({
   content,
   greeting,
+  greetingName,
   trackId,
   joined,
   initialTicks,
 }: {
   content: TrackContent;
   greeting?: string;
+  greetingName?: string;
   trackId: string;
   trackTitle?: string;
   joined: { id: string; title: string }[];
@@ -178,6 +181,7 @@ export default function CourseView({
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fff", color: INK }}>
+      {greeting && <GreetingIntro text={greeting} name={greetingName ?? ""} />}
       {/* top bar */}
       <Box component="header" sx={{ position: "sticky", top: 0, zIndex: 50, bgcolor: "#fff", borderBottom: `1px solid ${LINE}` }}>
         <Container maxWidth="lg" sx={{ display: "flex", alignItems: "center", gap: 2, minHeight: 56, flexWrap: "wrap", py: { xs: 1, sm: 0 } }}>
@@ -238,9 +242,6 @@ export default function CourseView({
 
             {/* title block, shown once at the top of every section */}
             <Box sx={{ mb: 5 }}>
-              {greeting && (
-                <Typography sx={{ mb: 1.5, fontSize: 14.5, fontWeight: 600, color: ACCENT }}>{greeting}</Typography>
-              )}
               <Typography variant="h1" sx={{ fontSize: { xs: 28, md: 36 }, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.12, color: INK, maxWidth: "22ch", textWrap: "balance" }}>
                 {content.hero.h1}
               </Typography>

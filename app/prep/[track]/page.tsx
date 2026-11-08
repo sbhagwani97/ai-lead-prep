@@ -27,7 +27,8 @@ export default async function TrackPage({ params }: { params: Promise<{ track: s
   return (
     <CourseView
       content={content}
-      greeting={greeting}
+      greeting={greeting.text}
+      greetingName={greeting.name}
       trackId={track.id}
       trackTitle={track.title}
       joined={TRACKS.filter((t) => profile.tracks.includes(t.id)).map((t) => ({ id: t.id, title: t.title }))}

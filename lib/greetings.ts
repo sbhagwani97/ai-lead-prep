@@ -21,10 +21,12 @@ const RETURNING_NO_NAME = [
   "Let's pick up where you left off.",
 ];
 
-export function pickGreeting(firstName: string | null | undefined, returning: boolean): string {
-  const name = firstName?.trim();
-  if (!returning) return name ? `Welcome to Preppy, ${name}!` : "Welcome to Preppy!";
+export type Greeting = { text: string; name: string };
+
+export function pickGreeting(firstName: string | null | undefined, returning: boolean): Greeting {
+  const name = firstName?.trim() ?? "";
+  if (!returning) return { text: name ? `Welcome to Preppy, ${name}!` : "Welcome to Preppy!", name };
   const list = name ? RETURNING : RETURNING_NO_NAME;
   const line = list[Math.floor(Math.random() * list.length)];
-  return line.replace("{name}", name ?? "");
+  return { text: line.replace("{name}", name), name };
 }
