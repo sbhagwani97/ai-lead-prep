@@ -56,7 +56,7 @@ export default function StoryCard({ weeks, track }: { weeks: StoryWeek[]; track:
       component="section"
       aria-label="Course progress, week by week"
       sx={{
-        height: reduce ? "auto" : { xs: "360vh", md: "420vh" },
+        height: reduce ? "auto" : { xs: "200vh", md: "230vh" },
         py: reduce ? 9 : 0,
         background: "linear-gradient(180deg, #fafbfa, #f1f8f6 50%, #fafbfa)",
         borderTop: 1,

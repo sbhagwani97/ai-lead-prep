@@ -600,7 +600,7 @@
   }
  ],
  "sources": {
-  "lead": "Read from search results (snippets, not full pages). Study-material links in section 2 and 3 came from the same searches and were not opened one by one, so tell me if any is dead. Many are blogs or job boards, so treat figures as directional.",
+  "lead": "The job-posting analyses, job descriptions and docs this track was built from. Many are blogs or job boards, so treat the figures as directional.",
   "items": [
    {
     "title": "AI Engineer skills in 4,155 postings (InterviewStack)",

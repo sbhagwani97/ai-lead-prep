@@ -12,7 +12,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
-import LinearProgress from "@mui/material/LinearProgress";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -35,6 +34,22 @@ const WEEKS: StoryWeek[] = [
   { t: "LLMOps and serving", tasks: ["Gateway with fallback", "Cost and token accounting", "Guardrails on input and output", "Sketch the serving plan"] },
   { t: "Leadership and mocks", tasks: ["Security and governance review", "Build vs buy write-up", "System-design drills", "Two mock interviews"] },
 ];
+
+const PROJECT = [
+  { t: "Runbook assistant", d: "RAG with hybrid search, reranking and citations", w: "Wk 1-2" },
+  { t: "Agent", d: "LangGraph agent with human approval and an MCP tool server", w: "Wk 3" },
+  { t: "Quality and safety", d: "Golden-set evals in CI, gateway and guardrails", w: "Wk 4-5" },
+  { t: "Platform story", d: "One-page architecture: serving, Kubernetes, cost, security", w: "Wk 5-6" },
+];
+
+// Same numbered badge the course page uses for concept cards.
+function Num({ n }: { n: number }) {
+  return (
+    <Box component="span" sx={{ display: "inline-grid", placeItems: "center", width: 26, height: 26, borderRadius: "50%", bgcolor: "#e6f6f3", color: "primary.main", fontSize: 12.5, fontWeight: 700, flex: "none" }}>
+      {n}
+    </Box>
+  );
+}
 
 const wrapSx = { py: { xs: 9, md: 14 } } as const;
 const eyebrow = { bgcolor: "#e6f6f3", color: "primary.main", border: 0 } as const;
@@ -64,8 +79,8 @@ export default function LandingView({ tracks }: { tracks: Track[] }) {
               ))}
             </Box>
             <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
-              <Button component={Link} href="/sign-in" color="inherit" sx={{ display: { xs: "none", sm: "inline-flex" } }}>Sign in</Button>
-              <Button component={Link} href="/sign-up" variant="contained">Get started</Button>
+              <Button component={Link} href="/sign-in" color="inherit" sx={{ px: { xs: 1.25, sm: 2 } }}>Sign in</Button>
+              <Button component={Link} href="/sign-up" variant="contained" sx={{ px: { xs: 1.75, sm: 2.5 }, whiteSpace: "nowrap" }}>Get started</Button>
             </Box>
           </Toolbar>
         </Container>
@@ -144,7 +159,7 @@ export default function LandingView({ tracks }: { tracks: Track[] }) {
             {[
               { t: "Concepts with a line you can say out loud", d: "Each card has the few points interviewers probe, study links, and a sentence to practise.", flip: false, v: "acc" },
               { t: "Tools, ranked by how deep to go", d: "Know what each tool is for. Use a few hands-on, and keep a one-line answer for the rest.", flip: true, v: "tbl" },
-              { t: "A weekly plan that keeps score", d: "Tasks come with hours attached. Tick them and watch each week fill up.", flip: false, v: "wk" },
+              { t: "A project you can show for it", d: "One small project runs through the six weeks and ties the tools together, so you walk into the interview with something you built.", flip: false, v: "proj" },
             ].map((f) => (
               <Box key={f.t} sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: f.flip ? "1.1fr 1fr" : "1fr 1.1fr" }, gap: { xs: 3.5, md: 8 }, alignItems: "center", py: 4.5 }}>
                 <Box sx={{ order: { md: f.flip ? 2 : 0 } }}>
@@ -157,8 +172,8 @@ export default function LandingView({ tracks }: { tracks: Track[] }) {
                       <Accordion defaultExpanded disableGutters elevation={0} sx={{ border: 1, borderColor: "divider", borderRadius: "12px !important", "&:before": { display: "none" } }}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                           <Box>
-                            <Typography sx={{ fontWeight: 700, fontSize: 14.5 }}>2.3 RAG architecture</Typography>
-                            <Typography variant="body2" color="text.secondary">The most repeated requirement</Typography>
+                            <Typography sx={{ fontWeight: 700, fontSize: 14.5, display: "flex", alignItems: "center", gap: 1.25 }}><Num n={3} />RAG architecture</Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ pl: 4.6 }}>The most repeated requirement</Typography>
                           </Box>
                         </AccordionSummary>
                         <AccordionDetails>
@@ -168,9 +183,9 @@ export default function LandingView({ tracks }: { tracks: Track[] }) {
                           </Box>
                         </AccordionDetails>
                       </Accordion>
-                      {["2.4 Vector databases", "2.5 Agents and orchestration"].map((t) => (
+                      {["Vector databases", "Agents and orchestration"].map((t, i) => (
                         <Accordion key={t} disableGutters elevation={0} sx={{ border: 1, borderColor: "divider", borderRadius: "12px !important", "&:before": { display: "none" } }}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography sx={{ fontWeight: 700, fontSize: 14.5 }}>{t}</Typography></AccordionSummary>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography sx={{ fontWeight: 700, fontSize: 14.5, display: "flex", alignItems: "center", gap: 1.25 }}><Num n={4 + i} />{t}</Typography></AccordionSummary>
                           <AccordionDetails><Typography variant="body2" color="text.secondary">Key points, study links and a line to say out loud.</Typography></AccordionDetails>
                         </Accordion>
                       ))}
@@ -183,12 +198,14 @@ export default function LandingView({ tracks }: { tracks: Track[] }) {
                         <Chip size="small" label={use ? "Use" : "Know"} color={use ? "primary" : "default"} variant={use ? "filled" : "filled"} sx={use ? { bgcolor: "#d9f0ec", color: "#115e59" } : undefined} />
                       </Box>
                     ))}
-                  {f.v === "wk" &&
-                    [["Week 1", 100], ["Week 2", 72], ["Week 3", 35], ["Week 4", 0]].map(([w, v]) => (
-                      <Box key={String(w)} sx={{ display: "grid", gridTemplateColumns: "64px 1fr 44px", alignItems: "center", gap: 1.75, bgcolor: "#fff", border: 1, borderColor: "divider", borderRadius: 3, px: 2, py: 1.75 }}>
-                        <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{String(w)}</Typography>
-                        <LinearProgress variant="determinate" value={Number(v)} />
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: "right" }}>{String(v)}%</Typography>
+                  {f.v === "proj" &&
+                    PROJECT.map((p) => (
+                      <Box key={p.t} sx={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 2, bgcolor: "#fff", border: 1, borderColor: "divider", borderRadius: 3, px: 2, py: 1.5 }}>
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography sx={{ fontWeight: 600, fontSize: 14.5 }}>{p.t}</Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.45 }}>{p.d}</Typography>
+                        </Box>
+                        <Chip size="small" label={p.w} sx={{ bgcolor: "#d9f0ec", color: "#115e59" }} />
                       </Box>
                     ))}
                 </Box>
